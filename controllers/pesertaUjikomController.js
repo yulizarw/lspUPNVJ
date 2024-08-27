@@ -1,20 +1,49 @@
-const {User, pesertaUjikom} = require('../models')
+const { User, pesertaUjikom } = require('../models')
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-module.exports = class pesertaUjikomController{
+module.exports = class pesertaUjikomController {
   // home
-  static async home (req,res){
+  static async home(req, res) {
     console.log('controller')
-    try{
+    try {
       res.status(200).json({
-        home:'ini halama home'
+        home: 'ini halama home'
       })
-    }catch(error){
+    } catch (error) {
       res.status(500).json(error)
     }
   }
+
+  // get MUK
+  static async pesertaGetMUK(req, res) {
+    try {
+      const { mukId } = req.params;
+      const fields = await APL02Dynamic.findAll({ where: { mukId } });
+      res.json(fields);
+
+    } catch (error){
+
+    }
+  }
+
+  static async pesertaPostApl01(req, res) {
+    try {
+      const { applicantName, dynamicFields } = req.body;
+
+      const base = await APL02Base.create({ applicantName });
+
+      const dynamicEntries = dynamicFields.map(field => ({
+        mukId: field.mukId,
+        fieldName: field.fieldName,
+        fieldValue: field.fieldValue,
+        baseId: base.id
+      }));
+      }catch(error) {
+
+      }
+    }
   // news lsp
   // about LSP UPN VJ
   // reviewer LSP UPNVJ

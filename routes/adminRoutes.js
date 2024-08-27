@@ -18,5 +18,21 @@ const routes = require ('express').Router()
 // routes.patch('/orders/:id',adminController.editOrder)
 // routes.delete('/orders/:id',adminController.deleteOrder)
 
+// admin
+// list MUK
+// create schedule
+// create TUK
+// assign asesor to kelas
+// validate APL 01 
+
+// validate APL 02
+
+
+// asesor
+// post MUK
+
+// list MUK
+// list asesi
+// penilaian asesi
 
 module.exports = routes
