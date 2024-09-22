@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class tuk extends Model {
+  class Tuk extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,10 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      tuk.belongsTo(models.skemaUjikom)
+      Tuk.belongsTo(models.SkemaUjikom,{
+        foreignKey:'skemaUjikomId'
+      })
     }
   }
-  tuk.init({
+  Tuk.init({
     namaTUK:{
       type:DataTypes.STRING,
       validate:{
@@ -73,8 +75,7 @@ module.exports = (sequelize, DataTypes) => {
     } 
   }, {
     sequelize,
-    modelName: 'tuk',
-    freezeTableName: true
+    modelName: 'Tuk',
   });
-  return tuk;
+  return Tuk;
 };

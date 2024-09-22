@@ -48,7 +48,20 @@ module.exports = class homeController {
   }
   // about LSP UPN VJ
   // reviewer LSP UPNVJ
+  static async listAsesor (req,res){
+    try{
+      let asesorList = await User.findAll({
+        where:{
+          userRole:'Asesor' 
+        }
+      })
+      asesorList.length != 0 ? res.status(201).json(asesorList): res.status(404).json('Belum ada asesor yang terdaftar dalam LSP UPN Veteran Jakarta')
+    }catch(error){
+      res.status(500).json(error)
+    }
+  }
   // pemetaan anak didik LSP UPNVJ
+  
 
   static async testUmpan (req,res){
     try{

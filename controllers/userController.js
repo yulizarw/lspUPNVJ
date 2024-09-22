@@ -1,4 +1,4 @@
-const {User } = require('../models')
+const {User, JadwalUjikom, PesertaUjikom} = require('../models')
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -21,8 +21,6 @@ module.exports = class userController {
         sptAsesor:req.body.sptAsesor
       }
       let allowedRoles = ['Admin', 'Asesor', 'Peserta Ujikom']
-
-      console.log(allowedRoles.includes(req.body.userRole))
       if(allowedRoles.includes(req.body.userRole)){
         let registerUser = await User.create(params)
         let access_token = jwt.sign({email:registerUser.userEmail, userName:registerUser.userName, role:registerUser.userRole, password:registerUser.userPassword, photo:registerUser.userPhoto, department:registerUser.userDepartment, phone:registerUser.userPhone, domisili:registerUser.userDomisili},process.env.SECRET)
@@ -54,6 +52,7 @@ module.exports = class userController {
       ) {
         let access_token = jwt.sign(
           {
+            id:loginUser.id,
             email:loginUser.userEmail, 
             userName:loginUser.userName, 
             role:loginUser.userRole, 
@@ -68,6 +67,7 @@ module.exports = class userController {
         let allowedRoles = ['Admin', 'Asesor', 'Peserta Ujikom']
         if(allowedRoles.includes(req.body.role)){
           res.status(201).json({
+            id:loginUser.id,
             access_token,
             userName:loginUser.userName, 
             role:loginUser.userRole, 
@@ -88,8 +88,39 @@ module.exports = class userController {
       res.status(500).json(error);
     }
   }
+
+  // jadwal uji
+  static async jadwalUji(req, res) {
+    try {
+      let userIsLogin = req.userLogin;
+      console.log(userIsLogin);
+  
+      if (userIsLogin) {
+        // let paraPeserta = await PesertaUjikom.findAll()
+
+        // console.log(!paraPeserta)
+        let allJadwalUji = await JadwalUjikom.findAll(); // Use singular form if the model is named 'jadwalUjikom'
+        // console.log(allJadwalUji)
+        // if (allJadwalUji){
+        //   res.status(200).json(allJadwalUji)
+        // }else {
+        //   res.status(404).json('Belum Ada Jadwal Ujikom saat ini, cek kembali secara berkala')
+        // }
+      } else {
+        res.status(404).json('Silahkan lakukan Log In terlebih dahulu');
+      }
+    } catch (error) {
+      console.error('Error:', error); // Log the error to get more details
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message // Send a readable error message
+      });
+    }
+  }
+  
   // news lsp
   // about LSP UPN VJ
   // reviewer LSP UPNVJ
+  
   // pemetaan anak didik LSP UPNVJ
 }

@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('tuks', {
+    await queryInterface.createTable('Tuks', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -24,6 +24,13 @@ module.exports = {
       skPenetapanTUK: {
         type: Sequelize.STRING
       },
+      skemaUjikomId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'SkemaUjikoms',
+          key:'id'
+        }
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -35,6 +42,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('tuks');
+    await queryInterface.dropTable('Tuks');
   }
 };

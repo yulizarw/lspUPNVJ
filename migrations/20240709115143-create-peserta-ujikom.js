@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('pesertaUjikoms', {
+    await queryInterface.createTable('PesertaUjikoms', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,6 +12,12 @@ module.exports = {
       namaPeserta: {
         type: Sequelize.STRING
       },
+      lat:{
+        type:Sequelize.STRING
+      },
+      long:{
+        type:Sequelize.STRING
+      },
       apl01: {
         type: Sequelize.STRING
       },
@@ -20,6 +26,15 @@ module.exports = {
       },
       frAK01: {
         type: Sequelize.STRING
+      },
+      userId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'Users',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'SET NULL'
       },
       createdAt: {
         allowNull: false,
@@ -32,6 +47,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('pesertaUjikoms');
+    await queryInterface.dropTable('PesertaUjikoms');
   }
 };

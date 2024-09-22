@@ -20,7 +20,7 @@ module.exports = class pesertaUjikomController {
   static async pesertaGetMUK(req, res) {
     try {
       const { mukId } = req.params;
-      const fields = await APL02Dynamic.findAll({ where: { mukId } });
+      const fields = await Apl2Dynamic.findAll({ where: { mukId } });
       res.json(fields);
 
     } catch (error){
@@ -32,7 +32,7 @@ module.exports = class pesertaUjikomController {
     try {
       const { applicantName, dynamicFields } = req.body;
 
-      const base = await APL02Base.create({ applicantName });
+      const base = await Apl02Base.create({ applicantName });
 
       const dynamicEntries = dynamicFields.map(field => ({
         mukId: field.mukId,

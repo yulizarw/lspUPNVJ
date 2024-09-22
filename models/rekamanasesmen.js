@@ -2,9 +2,9 @@
 const {
   Model
 } = require('sequelize');
-const umpanbalik = require('./umpanbalik');
+
 module.exports = (sequelize, DataTypes) => {
-  class rekamanAsesmen extends Model {
+  class RekamanAsesmen extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,12 +12,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      rekamanAsesmen.belongsTo(models.pesertaUjikom)
-      rekamanAsesmen.belongsToMany(models.bandingUjikom, {through:models.umpanBalik})
-      rekamanAsesmen.belongsTo(models.jadwalUjikom)
+      RekamanAsesmen.belongsTo(models.PesertaUjikom, {
+        foreignKey:'pesertaUjikomId'
+      })
+      RekamanAsesmen.belongsToMany(models.BandingUjikom, {through:models.UmpanBalik,foreignKey:'rekamanAsesmenId', otherKey:'bandingUjikomId'})
+      RekamanAsesmen.belongsTo(models.JadwalUjikom, {
+        foreignKey:'jadwalUjikomId'
+      })
     }
   }
-  rekamanAsesmen.init({
+  RekamanAsesmen.init({
     statusUjikom: {
       type:DataTypes.STRING,
       validate:{
@@ -68,8 +72,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'rekamanAsesmen',
-    freezeTableName: true
+    modelName: 'RekamanAsesmen',
   });
-  return rekamanAsesmen;
+  return RekamanAsesmen;
 };

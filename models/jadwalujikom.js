@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class jadwalUjikom extends Model {
+  class JadwalUjikom extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,12 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      jadwalUjikom.belongsTo(models.pesertaUjikom)
-      jadwalUjikom.hasMany(models.rekamanAsesmen)
-      jadwalUjikom.belongsTo(models.skemaUjikom)
+      JadwalUjikom.belongsTo(models.PesertaUjikom,{
+        foreignKey:'pesertaUjikomId'
+      })
+      JadwalUjikom.hasMany(models.RekamanAsesmen, {
+        foreignKey:'jadwalUjikomId'
+      })
+      JadwalUjikom.belongsTo(models.SkemaUjikom,{
+        foreignKey:'skemaUjikomId'
+      })
     }
   }
-  jadwalUjikom.init({
+  JadwalUjikom.init({
     tanggalWaktu: 
     {
       type:DataTypes.DATE,
@@ -28,8 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'jadwalUjikom',
-    freezeTableName: true
+    modelName: 'JadwalUjikom',
   });
-  return jadwalUjikom;
+  return JadwalUjikom;
 };

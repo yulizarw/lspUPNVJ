@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class pesertaUjikom extends Model {
+  class PesertaUjikom extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,14 +11,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      pesertaUjikom.hasOne(models.bandingUjikom)
-      pesertaUjikom.hasMany(models.jadwalUjikom)
-      pesertaUjikom.hasMany(models.rekamanAsesmen)
-      pesertaUjikom.hasMany(models.skemaUjikom)
-      pesertaUjikom.belongsTo(models.User)
+      PesertaUjikom.hasOne(models.BandingUjikom,{
+        foreignKey:'pesertaUjikomId'
+      })
+      PesertaUjikom.hasMany(models.JadwalUjikom, {
+        foreignKey:'pesertaUjikomId'
+      })
+      PesertaUjikom.hasMany(models.RekamanAsesmen,{
+        foreignKey:'pesertaUjikomId'
+      })
+      PesertaUjikom.hasMany(models.SkemaUjikom,{
+        foreignKey:'pesertaUjikomId'
+      })
+      PesertaUjikom.belongsTo(models.User, {
+        foreignKey:{
+          name:'userId'
+        }
+      })
     }
   }
-  pesertaUjikom.init({
+  PesertaUjikom.init({
     namaPeserta: {
       type:DataTypes.STRING,
       validate:{
@@ -71,8 +83,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'pesertaUjikom',
-    freezeTableName: true
+    modelName: 'PesertaUjikom',
   });
-  return pesertaUjikom;
+  return PesertaUjikom;
 };

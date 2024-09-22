@@ -5,12 +5,12 @@ const config =require('../config/config')
 const authentication = async (req, res, next) => {
   try {
       const { access_token } = req.headers;
-
+      console.log(access_token)
       if (access_token) {
           req.userLogin = jwt.verify(access_token, process.env.SECRET);
 
-          console.log(req.userLogin.role , 'apasih')
-          if (req.userLogin.role === "Admin") {
+          console.log(req.userLogin.role.toLowerCase(),'<<<<')
+          if (req.userLogin.role.toLowerCase() === "admin") {
               await User.findByPk(req.userLogin.id)
                   .then((admin) => {
                       if (!admin) {
@@ -21,14 +21,14 @@ const authentication = async (req, res, next) => {
                   .catch((err) => {
                       res.status(500).json(err);
                   });
-          } else if (req.userLogin.role === "Mahasiswa") {
+          } else if (req.userLogin.role.toLowerCase()=== "mahasiswa") {
               await User.findByPk(req.userLogin.id).then((mahasiswa) => {
                   if (!mahasiswa) {
                       res.status(400).json("Wrong Auth");
                   }
                   next();
               });
-          } else if (req.userLogin.role === "Asesor") {
+          } else if (req.userLogin.role.toLowerCase() === "asesor") {
               await User.findByPk(req.userLogin.id)
                   .then((Dikjar) => {
                       if (!Dikjar) {
@@ -36,7 +36,7 @@ const authentication = async (req, res, next) => {
                       }
                       next()
                   })
-          } else if (req.userLogin.role === "Dosen Pembimbing") {
+          } else if (req.userLogin.role.toLowerCase() === "dosen pembimbing") {
               await dosenPembimbing.findByPk(req.userLogin.id)
                   .then((dospem) => {
                       if (!dospem) {

@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('umpanBaliks', {
+    await queryInterface.createTable('UmpanBaliks', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,6 +12,25 @@ module.exports = {
       frak03Umpan: {
         type: Sequelize.STRING
       },
+      rekamanAsesmenId :{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'RekamanAsesmen',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
+      },
+      bandingUjikomId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'BandingUjikom',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
+      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -23,6 +42,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('umpanBaliks');
+    await queryInterface.dropTable('UmpanBaliks');
   }
 };

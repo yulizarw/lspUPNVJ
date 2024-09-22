@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('bandingUjikoms', {
+    await queryInterface.createTable('BandingUjikoms', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,6 +11,15 @@ module.exports = {
       },
       formBanding: {
         type: Sequelize.STRING
+      },
+      pesertaUjikomId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'PesertaUjikoms',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'SET NULL'
       },
       createdAt: {
         allowNull: false,
@@ -23,6 +32,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('bandingUjikoms');
+    await queryInterface.dropTable('BandingUjikoms');
   }
 };

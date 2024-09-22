@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('jadwalUjikoms', {
+    await queryInterface.createTable('JadwalUjikoms', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,6 +11,24 @@ module.exports = {
       },
       tanggalWaktu: {
         type: Sequelize.DATE
+      },
+      pesertaUjikomId :{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'PesertaUjikoms',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'SET NULL'
+      },
+      skemaUjikomId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'SkemaUjikoms',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'SET NULL'
       },
       createdAt: {
         allowNull: false,
@@ -23,6 +41,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('jadwalUjikoms');
+    await queryInterface.dropTable('JadwalUjikoms');
   }
 };

@@ -1,6 +1,6 @@
 const routes = require('express').Router()
 const userController = require('../controllers/userController')
-
+const {authentication} = require('../middlewares/auth')
 routes.get('/', userController)
 
 // register per role
@@ -8,9 +8,11 @@ routes.post('/register', userController.registerUser)
 // login per role
 routes.get('/login', userController.loginRole)
 
+routes.use(authentication)
+// user melihat jadwal uji (all user)
+routes.get('/jadwal-uji', userController.jadwalUji)
 // user asesor
 // asesor melihat jadwal uji
-
 
 
 // asesor memberikan penilaian ujikom

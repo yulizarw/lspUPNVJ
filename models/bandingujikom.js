@@ -2,9 +2,8 @@
 const {
   Model
 } = require('sequelize');
-const pesertaujikom = require('./pesertaujikom');
 module.exports = (sequelize, DataTypes) => {
-  class bandingUjikom extends Model {
+  class BandingUjikom extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,11 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      bandingUjikom.belongsTo(models.pesertaUjikom)
-      bandingUjikom.belongsToMany(models.rekamanAsesmen,{through:models.umpanBalik})
+      BandingUjikom.belongsTo(models.PesertaUjikom, {
+        foreignKey:'pesertaUjikomId'
+      })
+      BandingUjikom.belongsToMany(models.RekamanAsesmen,{through:models.UmpanBalik, foreignKey:'bandingUjikomId', otherKey:'rekamanAsesmenId'})
     }
   }
-  bandingUjikom.init({
+  BandingUjikom.init({
     formBanding: {
       type:DataTypes.STRING,
       validate:{
@@ -27,8 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   },{
     sequelize,
-    modelName: 'bandingUjikom',
-    freezeTableName: true
+    modelName: 'BandingUjikom',
   });
-  return bandingUjikom;
+  return BandingUjikom;
 };

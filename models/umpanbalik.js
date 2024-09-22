@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class umpanBalik extends Model {
+  class UmpanBalik extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,12 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  umpanBalik.init({
+  UmpanBalik.init({
     frak03Umpan: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'umpanBalik',
-    freezeTableName: true
+    modelName: 'UmpanBalik',
   });
-  return umpanBalik;
+  return UmpanBalik;
 };
