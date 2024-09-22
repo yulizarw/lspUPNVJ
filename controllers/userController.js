@@ -96,16 +96,13 @@ module.exports = class userController {
       console.log(userIsLogin);
   
       if (userIsLogin) {
-        // let paraPeserta = await PesertaUjikom.findAll()
-
-        // console.log(!paraPeserta)
         let allJadwalUji = await JadwalUjikom.findAll(); // Use singular form if the model is named 'jadwalUjikom'
-        // console.log(allJadwalUji)
-        // if (allJadwalUji){
-        //   res.status(200).json(allJadwalUji)
-        // }else {
-        //   res.status(404).json('Belum Ada Jadwal Ujikom saat ini, cek kembali secara berkala')
-        // }
+
+        if (allJadwalUji.length !== 0){
+          res.status(200).json(allJadwalUji)
+        }else {
+          res.status(404).json('Belum Ada Jadwal Ujikom saat ini, cek kembali secara berkala')
+        }
       } else {
         res.status(404).json('Silahkan lakukan Log In terlebih dahulu');
       }

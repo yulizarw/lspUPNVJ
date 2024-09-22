@@ -15,7 +15,7 @@ module.exports = {
       rekamanAsesmenId :{
         type:Sequelize.INTEGER,
         references:{
-          model:'RekamanAsesmen',
+          model:'RekamanAsesmens',
           key:'id'
         },
         onUpdate:'CASCADE',
@@ -24,7 +24,7 @@ module.exports = {
       bandingUjikomId:{
         type:Sequelize.INTEGER,
         references:{
-          model:'BandingUjikom',
+          model:'BandingUjikoms',
           key:'id'
         },
         onUpdate:'CASCADE',
