@@ -2,31 +2,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Apl02Dynamics', {
+    await queryInterface.createTable('Asesors', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      unitKompetensiId: {
-        type: Sequelize.INTEGER
-      },
-      fieldName: {
+      namaAsesor: {
         type: Sequelize.STRING
       },
-      fieldQuestion: {
-        type: Sequelize.STRING
+      noRegMET:{
+        type:Sequelize.STRING,
       },
-      fieldValue: {
-        type: Sequelize.STRING
+      tahunAkhirRegMET:{
+        type:Sequelize.DATE
       },
-      baseId:{
-        type:Sequelize.INTEGER,
-        references:{
-          model:'Apl02Bases',
-          key:'id'
-        }
+      jumlahMelaksanakanUjikom:{
+        type:Sequelize.INTEGER
+      },
+      kumulatifMelakukanUjikom:{
+        type:Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -39,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Apl02Dynamics');
+    await queryInterface.dropTable('Asesors');
   }
 };

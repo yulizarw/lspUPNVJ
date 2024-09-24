@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      UmpanBalik.belongsTo(models.PesertaUjikom,{
+        foreignKey:'pesertaUjikomId'
+      })
+      UmpanBalik.belongsTo(models.Asesor,{
+        foreignKey:'asesorId'
+      })
     }
   }
   UmpanBalik.init({

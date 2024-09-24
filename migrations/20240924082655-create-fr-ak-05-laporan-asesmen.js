@@ -2,57 +2,45 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('SkemaUjikoms', {
+    await queryInterface.createTable('FrAk05LaporanAsesmens', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      namaAsesor: {
-        type: Sequelize.STRING
-      },
       namaSkema: {
         type: Sequelize.STRING
       },
-      nomorSkema: {
+      tuk: {
         type: Sequelize.STRING
       },
-      sektorSkema: {
+      namaAsesor: {
         type: Sequelize.STRING
       },
-      jenisSkema: {
+      tanggalPelaksanaan: {
         type: Sequelize.STRING
       },
-      kodeUnitKompetensi: {
+      namaPeserta: {
         type: Sequelize.STRING
       },
-      judulUnitKompetensi: {
+      rekomendasiNilai: {
         type: Sequelize.STRING
       },
-      instrumenSkema: {
+      keteranganAsesmen: {
         type: Sequelize.STRING
       },
-      peninjauanInstrumen: {
+      aspekPelaksanaan: {
         type: Sequelize.STRING
       },
-      userId:{
-        type:Sequelize.INTEGER,
-        references:{
-          model:'Users',
-          key:'id'
-        },
-        onUpdate:'CASCADE',
-        onDelete:'SET NULL'
+      catatanPenolakan: {
+        type: Sequelize.STRING
       },
-      pesertaUjikomId:{
-        type:Sequelize.INTEGER,
-        references:{
-          model:'PesertaUjikoms',
-          key:'id'
-        },
-        onUpdate:'CASCADE',
-        onDelete:'SET NULL'
+      saranPerbaikan: {
+        type: Sequelize.STRING
+      },
+      tandaTanganAsesor: {
+        type: Sequelize.STRING
       },
       asesorId:{
         type:Sequelize.INTEGER,
@@ -61,7 +49,16 @@ module.exports = {
           key:'id'
         },
         onUpdate:'CASCADE',
-        onDelete:'SET NULL'
+        onDelete:'CASCADE'
+      },
+     skemaUjikomId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'SkemaUjikoms',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
       },
       createdAt: {
         allowNull: false,
@@ -74,6 +71,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('SkemaUjikoms');
+    await queryInterface.dropTable('FrAk05LaporanAsesmens');
   }
 };

@@ -66,6 +66,14 @@ module.exports = {
       telpPerusahaan: {
         type: Sequelize.STRING
       },
+      pesertaUjikomId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'PesertaUjikoms',
+          key:'id'
+        }
+      },
+    
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

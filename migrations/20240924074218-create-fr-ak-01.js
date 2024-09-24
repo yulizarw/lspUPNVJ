@@ -2,48 +2,42 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('SkemaUjikoms', {
+    await queryInterface.createTable('FrAk01s', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      skemaSertifikasi: {
+        type: Sequelize.STRING
+      },
+      tuk: {
+        type: Sequelize.STRING
+      },
+      namaTuk: {
+        type: Sequelize.STRING
+      },
       namaAsesor: {
         type: Sequelize.STRING
       },
-      namaSkema: {
+      namaPeserta: {
         type: Sequelize.STRING
       },
-      nomorSkema: {
+      usernamePeserta: {
         type: Sequelize.STRING
       },
-      sektorSkema: {
+      buktiDikumpulkan: {
         type: Sequelize.STRING
       },
-      jenisSkema: {
+      tanggalPelaksanaan: {
+        type: Sequelize.DATE
+      },
+      waktuPelaksanaan: {
         type: Sequelize.STRING
       },
-      kodeUnitKompetensi: {
+      tandaTanganAsesor: {
         type: Sequelize.STRING
-      },
-      judulUnitKompetensi: {
-        type: Sequelize.STRING
-      },
-      instrumenSkema: {
-        type: Sequelize.STRING
-      },
-      peninjauanInstrumen: {
-        type: Sequelize.STRING
-      },
-      userId:{
-        type:Sequelize.INTEGER,
-        references:{
-          model:'Users',
-          key:'id'
-        },
-        onUpdate:'CASCADE',
-        onDelete:'SET NULL'
       },
       pesertaUjikomId:{
         type:Sequelize.INTEGER,
@@ -52,16 +46,25 @@ module.exports = {
           key:'id'
         },
         onUpdate:'CASCADE',
-        onDelete:'SET NULL'
+        onDelete:'CASCADE'
       },
-      asesorId:{
+      skemaUjikomId:{
         type:Sequelize.INTEGER,
         references:{
-          model:'Asesors',
+          model:'SkemaUjikoms',
           key:'id'
         },
         onUpdate:'CASCADE',
-        onDelete:'SET NULL'
+        onDelete:'CASCADE'
+      },
+      tukId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'Tuks',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
       },
       createdAt: {
         allowNull: false,
@@ -74,6 +77,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('SkemaUjikoms');
+    await queryInterface.dropTable('FrAk01s');
   }
 };

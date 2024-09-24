@@ -9,8 +9,17 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      namaPeserta: {
+      namaSkema: {
         type: Sequelize.STRING
+      },
+      pesertaUjikomId: {
+        type:Sequelize.INTEGER,
+        references:{
+          model:'PesertaUjikoms',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'SET NULL'
       },
       createdAt: {
         allowNull: false,

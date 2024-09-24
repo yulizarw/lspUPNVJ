@@ -11,18 +11,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Apl02Base.hasMany(models.Apl02Dynamic, {as:'dynamicFields'})
+      Apl02Base.hasMany(models.Apl02Dynamic, {foreignKey:'baseId',as:'dynamicFields'})
+      Apl02Base.belongsTo(models.PesertaUjikom,{foreignKey:'pesertaUjikomId'})
+    
     }
   }
   Apl02Base.init({
-    namaPeserta: {
+    namaSkema: {
       type:DataTypes.STRING,
       validate:{
         notEmpty:{
           msg:'harap mengisi nama peserta'
         }
       }
-    } 
+    },
+    
   }, {
     sequelize,
     modelName: 'Apl02Base',

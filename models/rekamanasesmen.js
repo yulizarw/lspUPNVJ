@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
       RekamanAsesmen.belongsTo(models.JadwalUjikom, {
         foreignKey:'jadwalUjikomId'
       })
+      RekamanAsesmen.belongsTo(models.Asesor,{
+        foreignKey:'asesorId'
+      })
     }
   }
   RekamanAsesmen.init({

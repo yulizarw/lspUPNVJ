@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      // pesertaujikom hasone buktiportfolio
       PesertaUjikom.hasOne(models.BandingUjikom,{
         foreignKey:'pesertaUjikomId'
       })
@@ -28,6 +29,22 @@ module.exports = (sequelize, DataTypes) => {
           name:'userId'
         }
       })
+      PesertaUjikom.hasOne(models.Apl02Base, {
+        foreignKey:'pesertaUjikomId'
+      })
+      PesertaUjikom.hasOne(models.Apl01, {
+        foreignKey:'pesertaUjikomId'
+      })
+      PesertaUjikom.hasOne(models.UmpanBalik, {
+        foreignKey:'pesertaUjikomId'
+      })
+      PesertaUjikom.hasOne(models.BuktiPortfolio,{
+        foreignKey:'pesertaUjikomId'
+      })
+      PesertaUjikom.hasOne(models.FrAk01,{
+        foreignKey:'pesertaUjikomId'
+      })
+      // bukti porto, umpanbalik dan punya satu frak01
     }
   }
   PesertaUjikom.init({

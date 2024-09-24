@@ -27,6 +27,15 @@ module.exports = {
       portfolio: {
         type: Sequelize.STRING
       },
+      pesertaUjikomId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'PesertaUjikoms',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

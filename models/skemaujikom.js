@@ -23,6 +23,18 @@ module.exports = (sequelize, DataTypes) => {
       SkemaUjikom.belongsTo(models.PesertaUjikom,{
         foreignKey:'pesertaUjikomId'
       })
+      SkemaUjikom.hasOne(models.FrAk01,{
+        foreignKey:'skemaUjikomId'
+      })
+      SkemaUjikom.belongsTo(models.Asesor,{
+        foreignKey:'asesorId'
+      })
+      SkemaUjikom.hasMany(models.FrAk05LaporanAsesmen,{
+        foreignKey:'skemaUjikomId'
+      })
+      SkemaUjikom.hasMany(models.FrAk06PeninjauanProses,{
+        foreignKey:'skemaUjikomId'
+      })
     }
   }
   SkemaUjikom.init({

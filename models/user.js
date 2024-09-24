@@ -22,7 +22,9 @@ module.exports = (sequelize, DataTypes) => {
           name:'userId'
         }
       })
+    
     }
+    
   }
   User.init({
     userRole:{

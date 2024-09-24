@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Apl02Dynamic.init({
-    mukId: {
+    unitKompetensiId: {
       type:DataTypes.INTEGER,
       validate:{
         notEmpty:{
@@ -35,12 +35,27 @@ module.exports = (sequelize, DataTypes) => {
       }
 
     },
+    fieldQuestion: {
+      type:DataTypes.STRING,
+      validate:{
+        notEmpty:{
+          msg:'harap mengisi Pertanyaan'
+        }
+      }
+    },
     fieldValue: {
       type:DataTypes.STRING,
       validate:{
         notEmpty:{
-          msg:'harap mengisi fieldValue'
+          msg:'harap mengisi Kompeten / Tidak'
         }
+      }
+    },
+    baseId: {
+      type: DataTypes.INTEGER, // Ensure baseId is defined as a field
+      references: {
+        model: 'APL02Base', // Name of the target model
+        key: 'id'          // Primary key of the target model
       }
     }
   }, {

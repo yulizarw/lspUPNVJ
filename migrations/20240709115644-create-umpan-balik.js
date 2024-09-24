@@ -30,7 +30,24 @@ module.exports = {
         onUpdate:'CASCADE',
         onDelete:'CASCADE'
       },
-
+      pesertaUjikomId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'PesertaUjikoms',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
+      },
+      asesorId:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:'Asesors',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

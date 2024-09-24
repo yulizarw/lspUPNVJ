@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       Tuk.belongsTo(models.SkemaUjikom,{
         foreignKey:'skemaUjikomId'
       })
+      Tuk.hasOne(models.FrAk01,{
+        foreignKey:'tukId'
+      })
     }
   }
   Tuk.init({

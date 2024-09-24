@@ -11,25 +11,44 @@ routes.get('/login', userController.loginRole)
 routes.use(authentication)
 // user melihat jadwal uji (all user)
 routes.get('/jadwal-uji', userController.jadwalUji)
+
+// all user
+// list MUK
+routes.get('/list-muk', userController.allMUK)
+// list question on specific MUK pada pertanyaan per id findone
+routes.get('/detail-muk/:id', userController.detailMUK)
+// list question on specific MUK untuk seluruh pertanyaan findall
+routes.get('/list-detail-muk/:id', userController.detailAllMUK)
+
 // user asesor
 // asesor melihat jadwal uji
 
 
-// asesor memberikan penilaian ujikom
+// asesor memberikan penilaian ujikom ke satu peserta ujikom
 
 
-// asesor melakukan update penilaian ujikom
+// asesor melakukan update penilaian ujikom ke satu peserta ujikom
 
 
-// asesor upload MUK
+// ini belum bagus tapi jalan, all aseosr masih bisa liat selain dia punya skema/muk dan gmna caranya agar update muk itu sesuai dengan dia punya skema 
+// asesor upload MUK untuk apl02
+routes.post('/asesor/tambah-muk', userController.addMUK)
 
-// asesor update MUK
+// asesor update MUK di apl02
+routes.patch('/asesor/update-muk/:id', userController.updateMUK)
+
+// asesor delete per item MUK di apl 02
+
+// asesor delet all item di MUK di apl 02
+
 
 
 
 
 
 // user admin
+//admin memplot user peserta ujikom ke tabel peserta ujikom
+
 // admin menjadwalkan jadwal uji dan plot asesor beserta peserta
 
 // admin membuat kelas ujikom
@@ -63,14 +82,7 @@ routes.get('/jadwal-uji', userController.jadwalUji)
 
 // konektivitas kepada wa dan sosmed
 
-// user peserta ujikom
-// peserta ujikom mendaftar ujikom (hanya bisa mendaftar 1 kali)
+// user peserta ujikom berada di peserta ujikom
 
-// peserta ujikom melihat jadwal ujikom
-
-// peserta melakukan umpan balik
-
-
-// peserta melakukan banding
 
 module.exports=routes
