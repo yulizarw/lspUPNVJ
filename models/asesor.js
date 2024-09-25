@@ -34,7 +34,8 @@ module.exports = (sequelize, DataTypes) => {
     noRegMET:DataTypes.STRING,
     tahunAkhirRegMET:DataTypes.DATE,
     jumlahMelaksanakanUjikom:DataTypes.INTEGER,
-    kumulatifMelakukanUjikom:DataTypes.INTEGER
+    kumulatifMelakukanUjikom:DataTypes.INTEGER,
+    userId:DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Asesor',

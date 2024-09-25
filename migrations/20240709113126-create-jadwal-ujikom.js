@@ -12,15 +12,6 @@ module.exports = {
       tanggalWaktu: {
         type: Sequelize.DATE
       },
-      pesertaUjikomId :{
-        type:Sequelize.INTEGER,
-        references:{
-          model:'PesertaUjikoms',
-          key:'id'
-        },
-        onUpdate:'CASCADE',
-        onDelete:'SET NULL'
-      },
       skemaUjikomId:{
         type:Sequelize.INTEGER,
         references:{

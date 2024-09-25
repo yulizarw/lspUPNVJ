@@ -114,28 +114,29 @@ module.exports = class pesertaUjikomController {
   // edit data pribadi peserta
   static async editDataPribadi (req,res){
     try{
-      let {id} = req.params
       let userIsLogin = req.userLogin
+      let id = userIsLogin.id
       let {namaPeserta, lat, long, apl01,apl02,frAK01} = req.body
-      if(userIsLogin.role.toLowerCase()==='peserta ujikom'){
-        let findDataPeserta = await PesertaUjikom.findOne({
-          where:{userId:id}
-        })
-        if (findDataPeserta){
-          if (namaPeserta) findDataPeserta.namaPeserta = namaPeserta
-          if (lat) findDataPeserta.lat = lat
-          if (long) findDataPeserta.long = long
-          if (apl01) findDataPeserta.apl01 = apl01
-          if (apl02) findDataPeserta.apl02 = apl02
-          if (frAK01) findDataPeserta.frAK01 = frAK01
-          let saveUpdate = await findDataPeserta.save()
+      let findDataPeserta = await PesertaUjikom.findOne({
+        where:{userId:id}
+      })
+
+      if(userIsLogin.role.toLowerCase()==='peserta ujikom' && findDataPeserta){
         
-          if(saveUpdate){
-            res.status(201).json(`Data Pribadi ${findDataPeserta.namaPeserta} berhasil di update`)
-          }else{  
-            res.status(401).json('Tidak dapat melakukan update')
-          }
+        if (namaPeserta) findDataPeserta.namaPeserta = namaPeserta
+        if (lat) findDataPeserta.lat = lat
+        if (long) findDataPeserta.long = long
+        if (apl01) findDataPeserta.apl01 = apl01
+        if (apl02) findDataPeserta.apl02 = apl02
+        if (frAK01) findDataPeserta.frAK01 = frAK01
+        let saveUpdate = await findDataPeserta.save()
+        
+        if(saveUpdate){
+          res.status(201).json(`Data Pribadi ${findDataPeserta.namaPeserta} berhasil di update`)
+        }else{  
+          res.status(401).json('Tidak dapat melakukan update')
         }
+        
       }else{
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
@@ -150,16 +151,15 @@ module.exports = class pesertaUjikomController {
   // delete data pribadi perserta
   static async deleteDataPribadi (req,res){
     try{
-      let {id} = req.params
+      
       let userIsLogin = req.userLogin
-      if(userIsLogin.role.toLowerCase()==='peserta ujikom'){
-
-        let findDataPeserta = await PesertaUjikom.findOne({
-          where:{userId:id}
-        })
-
-        if (findDataPeserta){
-          let hapusData = await findDataPeserta.destroy()
+      let id = userIsLogin.id
+      let findDataPeserta = await PesertaUjikom.findOne({
+        where:{userId:id}
+      })
+      if(userIsLogin.role.toLowerCase()==='peserta ujikom' && findDataPeserta){
+        let hapusData = await findDataPeserta.destroy()
+        if (hapusData){
           res.status(201).json(`Data Pribadi ${findDataPeserta.namaPeserta} berhasil dihapus`)
         }else{
           res.status(401).json('Data Tidak dapat Dihapus, silahkan hubungi Admin untuk melakukan ini')

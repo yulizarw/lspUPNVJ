@@ -10,9 +10,9 @@ routes.post('/pendaftaran-skema', pesertaUjikomController.inputDataPeserta)
 // peserta ujikom melihat data nya
 routes.get('/data-pribadi/:id',pesertaUjikomController.listDataPribadi)
 // peserta ujikom mengubah sebagian datanya
-routes.patch('/edit-data-pribadi/:id', pesertaUjikomController.editDataPribadi)
+routes.patch('/edit-data-pribadi/', pesertaUjikomController.editDataPribadi)
 // peserta ujikom menghapus datanya
-routes.delete('/hapus-data-pribadi/:id', pesertaUjikomController.deleteDataPribadi)
+routes.delete('/hapus-data-pribadi/', pesertaUjikomController.deleteDataPribadi)
 // peserta ujikom melihat jadwal ujikom
 routes.get('/jadwal-ujikom-peserta', pesertaUjikomController.jadwalUjikomPeserta)
 // peserta melakukan umpan balik

@@ -1,4 +1,4 @@
-const {User, JadwalUjikom, Apl02Base, Apl02Dynamic} = require('../models')
+const {User, Asesor, JadwalUjikom, Apl02Base, Apl02Dynamic, SkemaUjikom} = require('../models')
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -186,69 +186,44 @@ module.exports = class userController {
     }
   }
 
-  // asesor only
-  //  tambah MUK
-  static async addMUK(req,res){
-    try {
-      let userisLogin = req.userLogin
-      let asesorisLogin = false
-      if (userisLogin.role.toLowerCase() ==='asesor' ) {
-        asesorisLogin = true
-        if (asesorisLogin == true){
-          let {namaSkema, dynamicFields}= req.body
-          let base = await Apl02Base.create({ namaSkema});
-  
-          let dynamicEntries = dynamicFields.map(field => ({
-            unitKompetensiId: field.unitKompetensiId,
-            fieldQuestion: field.fieldQuestion,
-            fieldName: field.fieldName,
-            fieldValue: field.fieldValue,
-            baseId: base.id,
-          }));
-          await Apl02Dynamic.bulkCreate(dynamicEntries);
-          res.status(201).send('MUK berhasil dibuat');
-        } else {
-          res.status(401).json('Mohon Maaf Anda Harus Login Terlebih Dahulu')
-        }
-      }else {
-        res.status(401).json('Anda Tidak Memiliki Akses')
-      }
-    }catch(error){
-      res.status(500).json({
-        message:'Internal Server Error',
-        error: error.message
-      })
-    }
-   
-  }
-
-  // patch muk
-  static async updateMUK (req,res){
+ 
+  // admin tambah skema
+  static async tambahSkema (req,res) {
     try{
-      let asesorIsLogin = req.userLogin.role.toLowerCase()
-      let {id} = req.params
-      let {fieldName, fieldQuestion, fieldValue} = req.body
+      let userisLogin = req.userLogin
+      let adminIsLogin = userisLogin.role.toLowerCase()
 
-      if (asesorIsLogin){
-        let detailedMUK = await Apl02Dynamic.findOne({
-          where:{unitKompetensiId:id}
-        })
-        console.log(detailedMUK)
-        if (fieldName) detailedMUK.fieldName = fieldName
-        if (fieldQuestion) detailedMUK.fieldQuestion = fieldQuestion
-        if (fieldValue) detailedMUK.fieldValue = fieldValue
-        let saveUpdate = await detailedMUK.save()
-        console.log(saveUpdate)
-        if(saveUpdate){
-          res.status(201).json(`Unit Kompetensi ke ${detailedMUK.unitKompetensiId} berhasil di update`)
-        }else{  
-          res.status(401).json('Tidak dapat melakukan update')
+      let findAsesor = await Asesor.findAll()
+      let selectAsesor = await Asesor.findOne({
+        where:{namaAsesor:req.body.namaAsesor}
+      })
+    
+      if (adminIsLogin && selectAsesor){
+        let params = {
+          namaAsesor : selectAsesor,
+          namaSkema: req.body.namaSkema,
+          nomorSkema:req.body.nomorSkema,
+          sektorSkema:req.body.sektorSkema,
+          jenisSkema:req.body.jenisSkema,
+          kodeUnitKompetensi:req.body.kodeUnitKompetensi,
+          judulUnitKompetensi:req.body.judulUnitKompetensi,
+          instrumenSkema:req.body.instrumenSkema,
+          peninjauanInstrumen:req.body.peninjauanInstrumen,
+          userId:userisLogin.id,
+          pesertaUjikomId:'none',
+          asesorId: selectAsesor.id
         }
-
+        let postSkema = await SkemaUjikom.create(params)
+        if (postSkema){
+          req.status(201).json(`Skema Kompetensi ${namaSkema} telah diperbaharui`)
+        }else {
+          req.status(401).json('Terjadi kendala pada server kami')
+        }
+      }else if (!selectAsesor){
+        res.status(401).json('Silahkan tambahkan User untuk dijadikan Asesor Terlebih Dahulu')
       }else{
-        res.status(401).json('Anda Tidak Memiliki Akses')
+        res.status(401).json('Anda Tidak Memiliki Akses, silahkan login terlebih dahulu')
       }
-
     }catch(error){
       res.status(500).json({
         message:'Internal Server Error',
@@ -256,7 +231,6 @@ module.exports = class userController {
       })
     }
   }
-  
   // news lsp
   // about LSP UPN VJ
   // reviewer LSP UPNVJ

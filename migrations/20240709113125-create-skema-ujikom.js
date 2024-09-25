@@ -45,15 +45,6 @@ module.exports = {
         onUpdate:'CASCADE',
         onDelete:'SET NULL'
       },
-      pesertaUjikomId:{
-        type:Sequelize.INTEGER,
-        references:{
-          model:'PesertaUjikoms',
-          key:'id'
-        },
-        onUpdate:'CASCADE',
-        onDelete:'SET NULL'
-      },
       asesorId:{
         type:Sequelize.INTEGER,
         references:{

@@ -2,48 +2,30 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('PesertaUjikoms', {
+    await queryInterface.createTable('JadwalSkemaUjikoms', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      namaPeserta: {
-        type: Sequelize.STRING
-      },
-      lat:{
-        type:Sequelize.STRING
-      },
-      long:{
-        type:Sequelize.STRING
-      },
-      apl01: {
-        type: Sequelize.STRING
-      },
-      apl02: {
-        type: Sequelize.STRING
-      },
-      frAK01: {
-        type: Sequelize.STRING
-      },
-      userId:{
-        type:Sequelize.INTEGER,
-        references:{
-          model:'Users',
-          key:'id'
-        },
-        onUpdate:'CASCADE',
-        onDelete:'SET NULL'
-      },
-      jadwalUjikomId:{
-        type:Sequelize.INTEGER,
+      jadwalUjikomid: {
+        type: Sequelize.INTEGER,
         references:{
           model:'JadwalUjikoms',
           key:'id'
         },
         onUpdate:'CASCADE',
-        onDelete:'SET NULL'
+        onDelete:'CASCADE'
+      },
+      skemaUjikomId: {
+        type: Sequelize.INTEGER,
+        references:{
+          model:'SkemaUjikoms',
+          key:'id'
+        },
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +38,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('PesertaUjikoms');
+    await queryInterface.dropTable('JadwalSkemaUjikoms');
   }
 };

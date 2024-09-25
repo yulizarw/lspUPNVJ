@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       PesertaUjikom.hasOne(models.BandingUjikom,{
         foreignKey:'pesertaUjikomId'
       })
-      PesertaUjikom.hasMany(models.JadwalUjikom, {
-        foreignKey:'pesertaUjikomId'
+      PesertaUjikom.belongsTo(models.JadwalUjikom, {
+        foreignKey:'jadwalUjikomId'
       })
       PesertaUjikom.hasMany(models.RekamanAsesmen,{
         foreignKey:'pesertaUjikomId'

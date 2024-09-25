@@ -11,17 +11,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      SkemaUjikom.hasOne(models.JadwalUjikom,{
-        foreignKey:'skemaUjikomId'
-      })
+      // SkemaUjikom.belongsToMany(JadwalUjikom, {
+      //   through: models.JadwalSkemaUjikom,
+      //   foreignKey: 'skemaUjikomId',
+      //   // as: 'jadwalUjikoms'  // Skema bisa diikuti di banyak jadwal
+      // });
+    
       SkemaUjikom.hasOne(models.Tuk,{
         foreignKey:'skemaUjikomId'
       })
       SkemaUjikom.belongsTo(models.User, {
         foreignKey:'userId'
-      })
-      SkemaUjikom.belongsTo(models.PesertaUjikom,{
-        foreignKey:'pesertaUjikomId'
       })
       SkemaUjikom.hasOne(models.FrAk01,{
         foreignKey:'skemaUjikomId'

@@ -10,7 +10,7 @@ const rekamanAsesmenRouter = require('./rekamanAsesmenRoutes')
 const pesertaUjikomRouter = require('./pesertaUjikomRoutes')
 const jadwalUjikomRouter = require('./jadwalUjikomRoutes')
 const bandingUjikomRouter= require('./bandingUjikomRoutes')
-
+const asesorRouter = require ('./asesorRoutes')
 routes.use('/', homeRouter)
 
 // user 
@@ -23,7 +23,9 @@ routes.use('/admin', adminRouter)
 routes.use('/peserta', pesertaUjikomRouter)
 
 // User Asesor
-routes.use('/asesor', skemaUjikomRouter)
+routes.use('/asesor', asesorRouter)
+
+// 
 
 // TUK
 routes.use('/tuk', tukRouter)
