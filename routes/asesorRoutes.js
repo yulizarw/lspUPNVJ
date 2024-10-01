@@ -8,6 +8,9 @@ routes.use(authentication)
 routes.post('/update-data-diri', asesorController.updateProfil)
 // melakukan perubahan pada data diri
 routes.patch('/ubah-data-diri', asesorController.ubahProfil)
+
+// asesor memilih skema ujikom
+routes.put('/memilih-skema', asesorController.memilihSkema)
 // asesor melihat jadwal uji
 
 
@@ -17,7 +20,7 @@ routes.patch('/ubah-data-diri', asesorController.ubahProfil)
 // asesor melakukan update penilaian ujikom ke satu peserta ujikom
 
 
-// ini belum bagus tapi jalan, all aseosr masih bisa liat selain dia punya skema/muk dan gmna caranya agar update muk itu sesuai dengan dia punya skema 
+
 // asesor upload MUK untuk apl02
 routes.post('/tambah-muk', asesorController.addMUK)
 

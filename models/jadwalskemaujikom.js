@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   JadwalSkemaUjikom.init({
-    jadwalUjikomid: DataTypes.INTEGER,
+    jadwalUjikomId: DataTypes.INTEGER,
     skemaUjikomId: DataTypes.INTEGER
   }, {
     sequelize,

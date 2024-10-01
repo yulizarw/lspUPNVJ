@@ -135,7 +135,15 @@ module.exports = class userController {
       let userIsLogin = req.userLogin
       
       if (userIsLogin) {
-        let listMUK = await Apl02Base.findAll()
+        let listMUK = await Apl02Dynamic.findAll({
+          include:[
+            {
+              model:Apl02Base,
+              as:'base'
+            },
+            
+          ]
+        })
         res.status(200).json(listMUK)
       } else{
 
@@ -173,27 +181,27 @@ module.exports = class userController {
     }
   }
   // detail MUK on specific MUK id
-  static async detailMUK(req,res){
-    try{
-      let userIsLogin = req.userLogin
-      let {id} = req.params
+  // static async detailMUK(req,res){
+  //   try{
+  //     let userIsLogin = req.userLogin
+  //     let {id} = req.params
    
-      if(userIsLogin){
-        let detailedMUK = await Apl02Dynamic.findOne({
-          where:{baseId:id}
-        })
-        res.status(200).json(detailedMUK)
-      }else{
-        res.status(401).json('Anda Tidak Memiliki Akses')
-      }
+  //     if(userIsLogin){
+  //       let detailedMUK = await Apl02Dynamic.findOne({
+  //         where:{baseId:id}
+  //       })
+  //       res.status(200).json(detailedMUK)
+  //     }else{
+  //       res.status(401).json('Anda Tidak Memiliki Akses')
+  //     }
 
-    }catch(error){
-      res.status(500).json({
-        message:'Internal Server Error',
-        error:error.message
-      })
-    }
-  }
+  //   }catch(error){
+  //     res.status(500).json({
+  //       message:'Internal Server Error',
+  //       error:error.message
+  //     })
+  //   }
+  // }
   static async detailAllMUK(req,res){
     try{
       let userIsLogin = req.userLogin
@@ -399,7 +407,9 @@ module.exports = class userController {
       let userisLogin = req.userLogin
       
       if (userisLogin) {
-        let findTUK = await Tuk.findAll()
+        let findTUK = await Tuk.findAll({
+          include:SkemaUjikom
+        })
         if (findTUK){
           res.status(200).json(findTUK)
         }else {
@@ -618,6 +628,62 @@ module.exports = class userController {
         error:error.message
       })
     }
+  }
+  static async buatJadwal (req,res) {
+    try{
+      let userisLogin = req.userLogin
+      let adminIsLogin = userisLogin.role.toLowerCase()
+      if (adminIsLogin ==='admin') {
+        let params = {
+          tanggalWaktu : req.body.tanggalWaktu
+        }
+        let makeJadwal = await JadwalUjikom.create(params)
+        if (makeJadwal) {
+          res.status(201).json(params)
+        }else {
+          res.status(400).json('Bad Request')
+        }
+      }else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
+    }catch(error) {
+      res.status(500).json({
+        message:'Internal Server Error',
+        error:error.message
+      })
+    }
+  }
+
+  static async gantiJadwal (req,res) {
+    try{
+      let userisLogin = req.userLogin
+      let adminIsLogin = userisLogin.role.toLowerCase()
+      let {id} = req.params
+      let {tanggalWaktu} = req.body
+      if (adminIsLogin === 'admin'){
+        let cariJadwal = await JadwalUjikom.findOne({
+          where:{id}
+        })
+        if (tanggalWaktu) cariJadwal.tanggalWaktu = tanggalWaktu
+        let saveUpdate = await cariJadwal.save()
+        if (saveUpdate) {
+          res.status(201).json(tanggalWaktu)
+        }else {
+          res.status(400).json('Bad Request')
+        }
+      }else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
+    }catch(erro) {
+      res.status(500).json({
+        message:'Internal Server Error',
+        error:error.message
+      })
+    }
+  }
+
+  static async listJadwal(req,res) {
+    
   }
   // news lsp
   // about LSP UPN VJ

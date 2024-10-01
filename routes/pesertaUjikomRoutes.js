@@ -26,16 +26,10 @@ routes.put('/pilih-skema', pesertaUjikomController.pilihSkema)
 // peserta melengkapi APL 02 dinamic setelah memilih skema
 routes.post('/pengisian-apl02-detil', pesertaUjikomController.detilAPL02)
 // peserta mengisi bukti portofolio
-
-// peserta mengisi
+routes.post('/isi-bukti-portofolio', pesertaUjikomController.isiPortofolio)
+// peserta mengisi frak01
+routes.post('/isi-frak01', pesertaUjikomController.isiFrak01)
 
 // peserta melakukan banding
-// // get muk id
-// routes.get('/listMUK/:mukId', pesertaGetMUK)
-// // post apl01
-// routes.post('/post/apl01'. pesertaPostApl01)
 
-// // post apl02
-// routes.post('/post/apl02'. pesertaPostApl02)
-// register serkom
 module.exports=routes

@@ -1,4 +1,4 @@
-const { User, PesertaUjikom, JadwalUjikom, Apl01, Apl02Base, Apl02Dynamic, SkemaUjikom, Apl02DinaPeserta} = require('../models')
+const { User,Asesor, PesertaUjikom, JadwalUjikom, Apl01, Apl02Base, Apl02Dynamic, SkemaUjikom, Apl02DinaPeserta, BuktiPortfolio,Tuk, JadwalSkemaUjikom, FrAk01} = require('../models')
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 module.exports = class pesertaUjikomController {
   // home
   static async home(req, res) {
-    console.log('controller')
+
     try {
       res.status(200).json({
         home: 'ini halaman home'
@@ -15,35 +15,6 @@ module.exports = class pesertaUjikomController {
       res.status(500).json(error)
     }
   }
-
-  // // get MUK
-  // static async pesertaGetMUK(req, res) {
-  //   try {
-  //     const { mukId } = req.params;
-  //     const fields = await Apl2Dynamic.findAll({ where: { mukId } });
-  //     res.json(fields);
-
-  //   } catch (error){
-
-  //   }
-  // }
-
-  // static async pesertaPostApl01(req, res) {
-  //   try {
-  //     const { applicantName, dynamicFields } = req.body;
-
-  //     const base = await Apl02Base.create({ applicantName });
-
-  //     const dynamicEntries = dynamicFields.map(field => ({
-  //       mukId: field.mukId,
-  //       fieldName: field.fieldName,
-  //       fieldValue: field.fieldValue,
-  //       baseId: base.id
-  //     }));
-  //     }catch(error) {
-
-  //     }
-  //   }
 
   // `peserta melakukan input data dan memulai proses pendaftaran`
   static async inputDataPeserta(req, res) {
@@ -96,12 +67,16 @@ module.exports = class pesertaUjikomController {
       let userIsLogin = req.userLogin
       let id = userIsLogin.id
 
+      let filterPeserta = await PesertaUjikom.findOne({
+        where:{userId:userIsLogin.id},
+        include:[
+          {model: JadwalUjikom},
+          {model: SkemaUjikom}
+        ]
+      })
+
       if (userIsLogin.role.toLowerCase() === 'peserta ujikom') {
-        let findDataPeserta = await PesertaUjikom.findOne({
-          where: { userId: id }
-        })
-        console.log(findDataPeserta)
-        res.status(200).json(findDataPeserta)
+        res.status(200).json(filterPeserta)
       } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
@@ -347,8 +322,109 @@ module.exports = class pesertaUjikomController {
       })
     }
   }
-  // news lsp
-  // about LSP UPN VJ
-  // reviewer LSP UPNVJ
-  // pemetaan anak didik LSP UPNVJ
+  static async isiPortofolio (req,res){
+    try {
+      let userIsLogin = req.userLogin
+      let pesertaIsLogin = userIsLogin.role.toLowerCase()
+      let {pasfoto, identitasPribadi, buktiPendidikan, buktiPelatihan, buktiPengalamanKerja, portfolio} = req.body
+
+      let pesertaUjikomDetil = await PesertaUjikom.findOne ({
+        where:{userId:userIsLogin.id}
+      })
+      let idPeserta = pesertaUjikomDetil.id
+      if (pesertaIsLogin) {
+        let params = {
+          pasfoto, identitasPribadi, buktiPendidikan, buktiPelatihan, buktiPengalamanKerja, portfolio, pesertaUjikomId: idPeserta
+        }
+        let createBukti = await BuktiPortfolio.create(params)
+        if (createBukti) {
+          res.status(201).json(`Portfolio anda berhasil disimpan`)
+        }else {
+          res.status(400).json(`Terjadi Kesalahan di sistem Kami`)
+        }
+      
+      }else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
+    }catch(error){
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      })
+    }
+  }
+  static async isiFrak01 (req,res) {
+    try {
+      let userIsLogin = req.userLogin
+      let pesertaIsLogin = userIsLogin.role.toLowerCase()
+      let filterPeserta = await PesertaUjikom.findOne({
+        where:{userId:userIsLogin.id},
+        include:[
+          {model: JadwalUjikom},
+          {model: SkemaUjikom, attributes:['id','namaSkema']},
+          {model:User, attributes:['userName']}
+        ]
+      })
+
+      let findTUK = await Tuk.findOne({
+        where:{skemaUjikomId:filterPeserta.dataValues.SkemaUjikom.id},
+        include:{
+          model : SkemaUjikom,
+          attributes: ['id', 'namaSkema']
+        }
+      })
+
+      let findAsesor = await Asesor.findOne({
+        where:{
+          skemaUjikomId:filterPeserta.dataValues.SkemaUjikom.id
+        }
+      })
+      let findJadwal = await SkemaUjikom.findOne({
+        where:{id:filterPeserta.dataValues.SkemaUjikom.id},
+        include:{
+          model:JadwalUjikom,
+          through : {
+            model:JadwalSkemaUjikom,
+          }
+        }
+      })
+      console.log(new Date(findJadwal.dataValues.JadwalUjikoms),'<<')
+      if (pesertaIsLogin === 'peserta ujikom') {
+        let params = {
+          skemaSertifikasi:filterPeserta.dataValues.SkemaUjikom.namaSkema,
+          tuk:'Sewaktu',
+          namaTuk:findTUK.namaTUK,
+          namaAsesor:findAsesor.namaAsesor,
+          namaPeserta:filterPeserta.namaPeserta,
+          usernamePeserta:filterPeserta.User.userName,
+          buktiDikumpulkan:req.body.buktiDikumpulkan,
+          // tanggalPelaksanaan:new Date(findJadwal.dataValues.JadwalUjikoms),
+          // waktuPelaksanaan :new Date(findJadwal.dataValues.JadwalUjikoms) ,
+          tanggalPelaksanaan : req.body.tanggalPelaksanaan,
+          waktuPelaksanaan:req.body.waktuPelaksanaan,
+          tandaTanganAsesor:req.body.tandaTanganAsesor,
+          pesertaUjikomId:filterPeserta.id,
+          skemaUjikomId:filterPeserta.SkemaUjikom.id,
+          tukId: findTUK.id
+        }
+
+        let createFrak01 = await FrAk01.create(params)
+
+        if (createFrak01){
+          res.status(201).json(params)
+
+        }else{
+          res.status(400).json('Frak01 tidak tersimpan')
+        }
+      }else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
+    }catch(error){
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      })
+    }
+  }
+
 }

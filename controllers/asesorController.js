@@ -1,4 +1,4 @@
-const {User, Asesor, JadwalUjikom, Apl02Base, Apl02Dynamic} = require('../models')
+const {User, Asesor, JadwalUjikom, Apl02Base, Apl02Dynamic, SkemaUjikom} = require('../models')
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -139,12 +139,12 @@ module.exports = class asesorController{
         let detailedMUK = await Apl02Dynamic.findOne({
           where:{unitKompetensiId:id}
         })
-        console.log(detailedMUK)
+     
         if (fieldName) detailedMUK.fieldName = fieldName
         if (fieldQuestion) detailedMUK.fieldQuestion = fieldQuestion
         if (fieldValue) detailedMUK.fieldValue = fieldValue
         let saveUpdate = await detailedMUK.save()
-        console.log(saveUpdate)
+
         if(saveUpdate){
           res.status(201).json(`Unit Kompetensi ke ${detailedMUK.unitKompetensiId} berhasil di update`)
         }else{  
@@ -163,7 +163,41 @@ module.exports = class asesorController{
     }
   }
 
-
+// memilih skema
+static async memilihSkema(req,res) {
+  try{
+    let asesorIsLogin = req.userLogin.role.toLowerCase()
+    let {namaSkema} = req.body
+    if (asesorIsLogin) {
+      let findSkema = await SkemaUjikom.findOne({
+        where:{namaSkema}
+      })
+      if(findSkema){
+        console.log(findSkema)
+        let userIsLogin = req.userLogin
+        let findAsesor = await Asesor.findOne({
+          where:{userId:userIsLogin.id}
+        })
+        if (namaSkema) findAsesor.skemaUjikomId = findSkema.id
+        let saveUpdate =  await findAsesor.save()
+        if (saveUpdate){
+          res.status(201).json(`${namaSkema} telah dipilih oleh ${findAsesor.namaAsesor}`)
+        }else {
+          res.status(400).json(`${namaSkema} tidak berhasil disimpan pada data ${findAsesor.namaAsesor}`)
+        }
+      }else {
+        res.status(400).json(`${namaSkema} belum terdaftar sebagai Skema Ujikom di LSP UPNVJ`)
+      }
+   }else {
+    res.status(401).json('Anda Tidak Memiliki Akses')
+   } 
+  }catch (error){
+    res.status(500).json({
+      message:'Internal Server Error',
+      error:error.message
+    })
+  }
+}
 
 }
 

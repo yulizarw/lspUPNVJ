@@ -16,7 +16,7 @@ routes.get('/jadwal-uji', userController.jadwalUji)
 // list MUK
 routes.get('/list-muk', userController.allMUK)
 // list question on specific MUK pada pertanyaan per id findone
-routes.get('/detail-muk/:id', userController.detailMUK)
+// routes.get('/detail-muk/:id', userController.detailMUK) sudah dicover di list-muk
 // list question on specific MUK untuk seluruh pertanyaan findall
 routes.get('/list-detail-muk/:id', userController.detailAllMUK)
 // list nama asesor
@@ -24,6 +24,7 @@ routes.get('/list-detail-muk/:id', userController.detailAllMUK)
 routes.get('/list-skema/', userController.listAllSkema)
 // admin melakukan liust semua TUK
 routes.get('/list-TUK', userController.listTUK)
+// list jadwal skemaujikom
 
 
 // user admin
@@ -53,6 +54,16 @@ routes.delete('/admin/hapus-data-apl01/:id', userController.hapusDataAPL01)
 routes.delete('/admin/hapus-detil-apl02/:id', userController.hapusApl02DinaPeserta)
 // admin list apl02dinaPeserta dengan include apl02 base
 routes.get('/admin/list-apl02', userController.listApl02Dina)
+
+// admin membuat jadwal ujikom
+routes.post('/admin/buat-jadwal', userController.buatJadwal)
+routes.patch ('/admin/ganti-jadwal/:id', userController.gantiJadwal)
+routes.get('/admin/list-jadwal',userController.listJadwal )
+// admin mencocokan jadwal dengan skema
+
+// admin mengganti jadwal 
+
+// admin menghapus jadwal
 // admin mengecek keseluruhan field yuang diisi lalu menyimpan edit data  skemaUjikomId di tabel mahasiswa untuk memverifikasi
 
 // admin menjadwalkan jadwal uji dan plot asesor beserta peserta
