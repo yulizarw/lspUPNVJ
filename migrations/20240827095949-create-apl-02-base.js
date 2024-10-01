@@ -12,15 +12,7 @@ module.exports = {
       namaSkema: {
         type: Sequelize.STRING
       },
-      pesertaUjikomId: {
-        type:Sequelize.INTEGER,
-        references:{
-          model:'PesertaUjikoms',
-          key:'id'
-        },
-        onUpdate:'CASCADE',
-        onDelete:'SET NULL'
-      },
+   
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

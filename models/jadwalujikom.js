@@ -17,11 +17,12 @@ module.exports = (sequelize, DataTypes) => {
       JadwalUjikom.hasMany(models.RekamanAsesmen, {
         foreignKey:'jadwalUjikomId'
       })
-      // JadwalUjikom.belongsToMany(SkemaUjikom, {
-      //   through: models.JadwalSkemaUjikom,
-      //   foreignKey: 'jadwalUjikomId',
-      //   // as: 'skemaUjikoms'  // Jadwal memiliki banyak skema
-      // });
+      JadwalUjikom.belongsToMany(models.SkemaUjikom, {
+        through: models.JadwalSkemaUjikom,
+        foreignKey: 'jadwalUjikomId',
+        otherKey:'skemaUjikomId'
+        // as: 'skemaUjikoms'  // Jadwal memiliki banyak skema
+      });
     
     }
   }

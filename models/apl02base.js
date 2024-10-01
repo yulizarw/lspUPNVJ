@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Apl02Base.hasMany(models.Apl02Dynamic, {foreignKey:'baseId',as:'dynamicFields'})
-      Apl02Base.belongsTo(models.PesertaUjikom,{foreignKey:'pesertaUjikomId'})
+      Apl02Base.belongsTo(models.Asesor,{foreignKey:'asesorId'})
     
     }
   }
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.STRING,
       validate:{
         notEmpty:{
-          msg:'harap mengisi nama peserta'
+          msg:'harap mengisi nama Skema'
         }
       }
     },

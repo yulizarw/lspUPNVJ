@@ -8,7 +8,7 @@ routes.use(authentication)
 // peserta ujikom mendaftar ujikom (hanya bisa mendaftar 1 kali)
 routes.post('/pendaftaran-skema', pesertaUjikomController.inputDataPeserta)
 // peserta ujikom melihat data nya
-routes.get('/data-pribadi/:id',pesertaUjikomController.listDataPribadi)
+routes.get('/data-pribadi/',pesertaUjikomController.listDataPribadi)
 // peserta ujikom mengubah sebagian datanya
 routes.patch('/edit-data-pribadi/', pesertaUjikomController.editDataPribadi)
 // peserta ujikom menghapus datanya
@@ -17,6 +17,17 @@ routes.delete('/hapus-data-pribadi/', pesertaUjikomController.deleteDataPribadi)
 routes.get('/jadwal-ujikom-peserta', pesertaUjikomController.jadwalUjikomPeserta)
 // peserta melakukan umpan balik
 
+// peserta mengisi APL 01 
+routes.post('/pengisian-apl01', pesertaUjikomController.isiAPL01)
+
+// peserta mengisi APL 02 base dengan memilih skema dulu
+routes.put('/pilih-skema', pesertaUjikomController.pilihSkema)
+
+// peserta melengkapi APL 02 dinamic setelah memilih skema
+routes.post('/pengisian-apl02-detil', pesertaUjikomController.detilAPL02)
+// peserta mengisi bukti portofolio
+
+// peserta mengisi
 
 // peserta melakukan banding
 // // get muk id

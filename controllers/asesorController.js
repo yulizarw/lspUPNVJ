@@ -93,11 +93,16 @@ module.exports = class asesorController{
     try {
       let userisLogin = req.userLogin
       let asesorisLogin = false
+      let id = userisLogin.id
+      let idAsesor = await Asesor.findOne({where:{userId:id}})
+      
       if (userisLogin.role.toLowerCase() ==='asesor' ) {
         asesorisLogin = true
+        
         if (asesorisLogin == true){
           let {namaSkema, dynamicFields}= req.body
-          let base = await Apl02Base.create({ namaSkema});
+
+          let base = await Apl02Base.create({namaSkema,asesorId:idAsesor.id});
   
           let dynamicEntries = dynamicFields.map(field => ({
             unitKompetensiId: field.unitKompetensiId,

@@ -12,15 +12,6 @@ module.exports = {
       tanggalWaktu: {
         type: Sequelize.DATE
       },
-      skemaUjikomId:{
-        type:Sequelize.INTEGER,
-        references:{
-          model:'SkemaUjikoms',
-          key:'id'
-        },
-        onUpdate:'CASCADE',
-        onDelete:'SET NULL'
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

@@ -1,4 +1,4 @@
-const { User, PesertaUjikom, JadwalUjikom} = require('../models')
+const { User, PesertaUjikom, JadwalUjikom, Apl01, Apl02Base, Apl02Dynamic, SkemaUjikom, Apl02DinaPeserta} = require('../models')
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -9,7 +9,7 @@ module.exports = class pesertaUjikomController {
     console.log('controller')
     try {
       res.status(200).json({
-        home: 'ini halama home'
+        home: 'ini halaman home'
       })
     } catch (error) {
       res.status(500).json(error)
@@ -45,84 +45,85 @@ module.exports = class pesertaUjikomController {
   //     }
   //   }
 
-    // `peserta melakukan input data dan memulai proses pendaftaran`
-  static async inputDataPeserta(req,res){
-    try{
+  // `peserta melakukan input data dan memulai proses pendaftaran`
+  static async inputDataPeserta(req, res) {
+    try {
       let userIsLogin = req.userLogin
-     
-      if(userIsLogin.role.toLowerCase()==='peserta ujikom'){
+
+      if (userIsLogin.role.toLowerCase() === 'peserta ujikom') {
         let findPeserta = await User.findOne({
-          where:{id:userIsLogin.id}
+          where: { id: userIsLogin.id }
         })
-        if (findPeserta){
-          let params ={
-            namaPeserta:req.body.namaPeserta,
+        if (findPeserta) {
+          let params = {
+            namaPeserta: req.body.namaPeserta,
             lat: req.body.lat,
-            long:req.body.long,
-            apl01:'Pending',
-            apl02:'Pending',
-            frAK01:'Pending',
+            long: req.body.long,
+            apl01: 'Pending',
+            apl02: 'Pending',
+            frAK01: 'Pending',
             userId: findPeserta.id
-            
+
           }
           let findPesertaData = await PesertaUjikom.findOne({
-            where:{namaPeserta:req.body.namaPeserta}
+            where: { namaPeserta: req.body.namaPeserta }
           })
-          if (findPesertaData){
+          if (findPesertaData) {
             res.status(401).json('Data Peserta Sudah Tersedia')
-          }else{
+          } else {
             let postPendaftaran = await PesertaUjikom.create(params)
-            if(postPendaftaran){
+            if (postPendaftaran) {
               res.status(201).json(`Pendataan Peserta ${params.namaPeserta} Berhasil `)
-            }else{
+            } else {
               res.status(400).json('Pendataan Peserta Tidak Berhasil')
             }
           }
-          
+
         }
-      }else{
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-    }catch(error){
+    } catch (error) {
       res.status(500).json({
-        message:'Internal Server Error',
-        error:error.message
+        message: 'Internal Server Error',
+        error: error.message
       })
     }
   }
   // melihat data pribadi
-  static async listDataPribadi (req,res){
-    try{
-      let {id} = req.params
+  static async listDataPribadi(req, res) {
+    try {
       let userIsLogin = req.userLogin
-      
-      if(userIsLogin.role.toLowerCase()==='peserta ujikom'){
+      let id = userIsLogin.id
+
+      if (userIsLogin.role.toLowerCase() === 'peserta ujikom') {
         let findDataPeserta = await PesertaUjikom.findOne({
-          where:{userId:id}
+          where: { userId: id }
         })
+        console.log(findDataPeserta)
         res.status(200).json(findDataPeserta)
-      }else{
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-    }catch(error){
+    } catch (error) {
       res.status(500).json({
-        message:'Internal Server Error',
-        error:error.message
+        message: 'Internal Server Error',
+        error: error.message
       })
     }
   }
   // edit data pribadi peserta
-  static async editDataPribadi (req,res){
-    try{
+  static async editDataPribadi(req, res) {
+    try {
       let userIsLogin = req.userLogin
       let id = userIsLogin.id
-      let {namaPeserta, lat, long, apl01,apl02,frAK01} = req.body
+      let { namaPeserta, lat, long, apl01, apl02, frAK01 } = req.body
       let findDataPeserta = await PesertaUjikom.findOne({
-        where:{userId:id}
+        where: { userId: id }
       })
 
-      if(userIsLogin.role.toLowerCase()==='peserta ujikom' && findDataPeserta){
-        
+      if (userIsLogin.role.toLowerCase() === 'peserta ujikom' && findDataPeserta) {
+
         if (namaPeserta) findDataPeserta.namaPeserta = namaPeserta
         if (lat) findDataPeserta.lat = lat
         if (long) findDataPeserta.long = long
@@ -130,79 +131,219 @@ module.exports = class pesertaUjikomController {
         if (apl02) findDataPeserta.apl02 = apl02
         if (frAK01) findDataPeserta.frAK01 = frAK01
         let saveUpdate = await findDataPeserta.save()
-        
-        if(saveUpdate){
+
+        if (saveUpdate) {
           res.status(201).json(`Data Pribadi ${findDataPeserta.namaPeserta} berhasil di update`)
-        }else{  
+        } else {
           res.status(401).json('Tidak dapat melakukan update')
         }
-        
-      }else{
+
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
 
-    }catch(error){
+    } catch (error) {
       res.status(500).json({
-        message:'Internal Server Error',
-        error:error.message
+        message: 'Internal Server Error',
+        error: error.message
       })
     }
   }
   // delete data pribadi perserta
-  static async deleteDataPribadi (req,res){
-    try{
-      
+  static async deleteDataPribadi(req, res) {
+    try {
+
       let userIsLogin = req.userLogin
       let id = userIsLogin.id
       let findDataPeserta = await PesertaUjikom.findOne({
-        where:{userId:id}
+        where: { userId: id }
       })
-      if(userIsLogin.role.toLowerCase()==='peserta ujikom' && findDataPeserta){
+      if (userIsLogin.role.toLowerCase() === 'peserta ujikom' && findDataPeserta) {
         let hapusData = await findDataPeserta.destroy()
-        if (hapusData){
+        if (hapusData) {
           res.status(201).json(`Data Pribadi ${findDataPeserta.namaPeserta} berhasil dihapus`)
-        }else{
+        } else {
           res.status(401).json('Data Tidak dapat Dihapus, silahkan hubungi Admin untuk melakukan ini')
         }
-      }else{
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-    }catch(error){
+    } catch (error) {
       res.status(500).json({
-        message:'Internal Server Error',
-        error:error.message
+        message: 'Internal Server Error',
+        error: error.message
       })
     }
   }
   // jadwal ujikom peserta
-  static async jadwalUjikomPeserta (req, res){
-    try{
-      
+  static async jadwalUjikomPeserta(req, res) {
+    try {
+
       let userIsLogin = req.userLogin
       let id = userIsLogin.id
-      if(userIsLogin.role.toLowerCase()==='peserta ujikom'){
+      if (userIsLogin.role.toLowerCase() === 'peserta ujikom') {
         let findSchedule = await JadwalUjikom.findOne({
-          where:{pesertaUjikomId:id}
+          where: { pesertaUjikomId: id }
         })
 
         let findDataPeserta = await PesertaUjikom.findOne({
-          where:{userId:id}
-        }) 
-        if (findSchedule && findDataPeserta){
+          where: { userId: id }
+        })
+        if (findSchedule && findDataPeserta) {
           res.status(200).json(findSchedule)
-        }if (!findSchedule){
+        } if (!findSchedule) {
           res.status(401).json('Anda Belum Mendaftar Pada Suatu Skema Ujikom, silahkan mendaftarkan diri dahulu')
-        }else{
+        } else {
           res.status(401).json('Anda Belum Memiliki Jadwal Ujikom, harap mendaftar ke Skema atau silahkan tunggu admin untuk melakukan Plotting')
         }
-      }else{
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
 
-    }catch(error){
+    } catch (error) {
       res.status(500).json({
-        message:'Internal Server Error',
-        error:error.message
+        message: 'Internal Server Error',
+        error: error.message
+      })
+    }
+  }
+  static async isiAPL01(req, res) {
+    try {
+      let userIsLogin = req.userLogin
+      let pesertaIsLogin = userIsLogin.role.toLowerCase()
+      let { nik, namaLengkap, jenisKelamin, tempatLahir, tanggalLahir, alamatDomisili, provinsi, kota, kecamatan, noTelp, email, pendidikanTerakhir, namaSekolahPT, jurusanProdi,
+        pekerjaan, namaPerusahaan, jabatan, alamatPerusahaan, telpPerusahaan
+      } = req.body
+
+      let cekDaftarPeserta = await PesertaUjikom.findOne({
+        where: { userId: userIsLogin.id }
+      })
+      let cekApl01 = await Apl01.findOne({ where: { pesertaUjikomId: cekDaftarPeserta.id } })
+
+      if (pesertaIsLogin === 'peserta ujikom') {
+        if (cekDaftarPeserta) {
+          let params = {
+            nik, namaLengkap, jenisKelamin, tempatLahir, tanggalLahir, alamatDomisili, provinsi, kota, kecamatan, noTelp, email, pendidikanTerakhir, namaSekolahPT, jurusanProdi,
+            pekerjaan, namaPerusahaan, jabatan, alamatPerusahaan, telpPerusahaan, pesertaUjikomId: cekDaftarPeserta.id
+          }
+
+          if (!cekApl01) {
+            let saveApl01 = await Apl01.create(params)
+            // let saveApl01 = params
+            if (saveApl01) {
+              res.status(201).json('Data APL 01 anda telah berhasil disimpan')
+              cekDaftarPeserta.apl01 = 'Sudah Terisi'
+              let saveStatus = await cekDaftarPeserta.save()
+              if (!saveStatus) {
+                res.status(400).json('Terjadi Kesalahan dalam update data status apl01')
+              }
+            }
+          } else {
+            res.status(401).status('Anda Telah menyerahkan form APL 01, hubungi Admin untuk melakukan perubahan')
+          }
+        } else {
+          res.status(400).json('Anda Belum mendaftarkan diri sebagai Peserta Ujikom, lakukan update data diri sebagai peserta ujikom')
+        }
+      } else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
+    } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      })
+    }
+  }
+  static async pilihSkema(req, res) {
+    try {
+      let userIsLogin = req.userLogin
+      let pesertaIsLogin = userIsLogin.role.toLowerCase()
+      if (pesertaIsLogin) {
+        let cekDaftarPeserta = await PesertaUjikom.findOne({
+          where: { userId: userIsLogin.id }
+        })
+        let { namaSkema } = req.body
+        let searchSkema = await SkemaUjikom.findOne({
+          where: {
+            namaSkema
+          }
+        })
+        if (cekDaftarPeserta) {
+          if(namaSkema) cekDaftarPeserta.skemaUjikomId = searchSkema.id
+          let saveUpdate = cekDaftarPeserta.save()
+          if (saveUpdate){
+            res.status(201).json(`Anda Telah Memiliki skema ${namaSkema}`)
+          }
+        }
+      } else {
+        res.status(401).json('Anda Belum Mendaftarkan Diri sebagai Peserta Ujikom')
+      }
+    } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      })
+    }
+  }
+  static async detilAPL02(req, res) {
+    try {
+      let userIsLogin = req.userLogin
+      let pesertaIsLogin = userIsLogin.role.toLowerCase()
+      if (pesertaIsLogin) {
+ 
+
+        let pesertaUjikom = await PesertaUjikom.findOne({
+          where: { userId: userIsLogin.id },
+          include:SkemaUjikom
+        })
+        let searchingNamaSkema = pesertaUjikom.SkemaUjikom.namaSkema
+        // console.log(searchingNamaSkema)
+        let searchFormApl02 = await Apl02Base.findOne({
+          where:{namaSkema:searchingNamaSkema},
+          include:{
+            model:Apl02Dynamic,
+            as:'dynamicFields'
+          }
+        })
+
+        let params = {
+          dynamicFields: searchFormApl02.dynamicFields.map(dynamicField => ({
+            // id: dynamicField.id,
+            fieldName: dynamicField.fieldName,
+            fieldQuestion: dynamicField.fieldQuestion,
+            fieldValue: req.body.fieldValue,
+            pesertaUjikomId : pesertaUjikom.id,
+            apl02DynamicId:dynamicField.id
+          }))
+        }
+       
+        const createdEntries = await Promise.all(
+          params.dynamicFields.map(async (dynamicField) => {
+            return await Apl02DinaPeserta.create({
+              apl02DynamicId: dynamicField.apl02DynamicId,  // This comes from params.dynamicFields
+              pesertaUjikomId: pesertaUjikom.id,  // This is assumed to come from input
+              fieldName: dynamicField.fieldName,
+              fieldQuestion:dynamicField.fieldQuestion,
+              fieldValue:dynamicField.fieldValue
+              
+            });
+          })
+        );
+        if (createdEntries) {
+          res.status(201).json(`Detil APL02 ${pesertaUjikom.namaPeserta} berhasil disimpan`)
+          pesertaUjikom.apl02 = 'Sudah Terisi'
+          await pesertaUjikom.save()
+        }else {
+          res.status(400).json('Data APL 02 anda tidak tersimpan')
+        }
+       
+      } else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
+    } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
       })
     }
   }

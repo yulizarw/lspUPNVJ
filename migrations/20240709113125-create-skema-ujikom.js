@@ -9,9 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      namaAsesor: {
-        type: Sequelize.STRING
-      },
       namaSkema: {
         type: Sequelize.STRING
       },
@@ -40,15 +37,6 @@ module.exports = {
         type:Sequelize.INTEGER,
         references:{
           model:'Users',
-          key:'id'
-        },
-        onUpdate:'CASCADE',
-        onDelete:'SET NULL'
-      },
-      asesorId:{
-        type:Sequelize.INTEGER,
-        references:{
-          model:'Asesors',
           key:'id'
         },
         onUpdate:'CASCADE',

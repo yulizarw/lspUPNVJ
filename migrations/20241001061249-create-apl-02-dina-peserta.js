@@ -2,40 +2,39 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Tuks', {
+    await queryInterface.createTable('Apl02DinaPeserta', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      namaTUK: {
+      fieldName: {
         type: Sequelize.STRING
       },
-      lokasiTUK: {
+      fieldQuestion: {
         type: Sequelize.STRING
       },
-      sptVerifikasiTUK: {
+      fieldValue: {
         type: Sequelize.STRING
       },
-      rekamanVerifikasi: {
-        type: Sequelize.STRING
-      },
-      skPenetapanTUK: {
-        type: Sequelize.STRING
-      },
-      lat:{
-        type:Sequelize.STRING
-      },
-      long:{
-        type:Sequelize.STRING
-      },
-      skemaUjikomId:{
-        type:Sequelize.INTEGER,
+
+      pesertaUjikomId: {
+        type: Sequelize.INTEGER,
         references:{
-          model:'SkemaUjikoms',
+          model:'PesertaUjikoms',
           key:'id'
-        }
+        },
+        onDelete:'CASCADE',
+        onUpdate:'CASCADE'
+      },
+      apl02DynamicId: {
+        type: Sequelize.INTEGER,
+          references:{
+            model:'Apl02Dynamics',
+            key:'id'
+          }
+        
       },
       createdAt: {
         allowNull: false,
@@ -48,6 +47,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Tuks');
+    await queryInterface.dropTable('Apl02DinaPeserta');
   }
 };

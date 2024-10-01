@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Apl02Dynamic extends Model {
+  class Apl02DinaPeserta extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,27 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Apl02Dynamic.belongsTo(models.Apl02Base,{
-        foreignKey:'baseId',
-        as:'base'
-      })
-   
-      Apl02Dynamic.belongsToMany(models.PesertaUjikom, {
-        through:models.Apl02DinaPeserta,
-        foreignKey:'apl02DynamicId',
-        otherKey:'pesertaUjikomId'
-      })
     }
   }
-  Apl02Dynamic.init({
-    unitKompetensiId: {
-      type:DataTypes.INTEGER,
-      validate:{
-        notEmpty:{
-          msg:'harap mengisi data MUK'
-        }
-      }
-    },
+  Apl02DinaPeserta.init({
+    
     fieldName: {
       type:DataTypes.STRING,
       validate:{
@@ -57,16 +40,12 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    baseId: {
-      type: DataTypes.INTEGER, // Ensure baseId is defined as a field
-      references: {
-        model: 'APL02Base', // Name of the target model
-        key: 'id'          // Primary key of the target model
-      }
-    }
+    pesertaUjikomId: DataTypes.INTEGER,
+    apl02DynamicId: DataTypes.INTEGER,
+    
   }, {
     sequelize,
-    modelName: 'Apl02Dynamic',
+    modelName: 'Apl02DinaPeserta',
   });
-  return Apl02Dynamic;
+  return Apl02DinaPeserta;
 };

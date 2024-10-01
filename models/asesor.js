@@ -11,9 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Asesor.hasMany(models.SkemaUjikom,{
-        foreignKey:'asesorId'
-      })
+
       Asesor.hasMany(models.RekamanAsesmen,{
         foreignKey:'asesorId'
       })
@@ -26,6 +24,15 @@ module.exports = (sequelize, DataTypes) => {
       Asesor.hasMany(models.FrAk06PeninjauanProses,{
         foreignKey:'asesorId'
       })
+      Asesor.belongsTo(models.SkemaUjikom,{
+        foreignKey:'skemaUjikomId'
+      })
+
+      Asesor.belongsTo(models.JadwalSkemaUjikom, {
+        foreignKey:'jadwalSkemaUjikomId' 
+      })
+
+      Asesor.hasMany(models.Apl02Base, {foreignKey:'asesorId'})
       // asesor punya FR.AK.05 – Laporan Asesmen, FR.AK.06 – Meninjau Proses Asesmen 
     }
   }

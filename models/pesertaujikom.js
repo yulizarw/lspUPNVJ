@@ -1,6 +1,7 @@
 'use strict';
 const {
-  Model
+  Model,
+  BelongsToMany
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class PesertaUjikom extends Model {
@@ -21,17 +22,13 @@ module.exports = (sequelize, DataTypes) => {
       PesertaUjikom.hasMany(models.RekamanAsesmen,{
         foreignKey:'pesertaUjikomId'
       })
-      PesertaUjikom.hasMany(models.SkemaUjikom,{
-        foreignKey:'pesertaUjikomId'
-      })
+    
       PesertaUjikom.belongsTo(models.User, {
         foreignKey:{
           name:'userId'
         }
       })
-      PesertaUjikom.hasOne(models.Apl02Base, {
-        foreignKey:'pesertaUjikomId'
-      })
+    
       PesertaUjikom.hasOne(models.Apl01, {
         foreignKey:'pesertaUjikomId'
       })
@@ -43,6 +40,17 @@ module.exports = (sequelize, DataTypes) => {
       })
       PesertaUjikom.hasOne(models.FrAk01,{
         foreignKey:'pesertaUjikomId'
+      })
+      PesertaUjikom.belongsTo(models.SkemaUjikom,{
+        foreignKey:'skemaUjikomId'
+      })
+
+     
+
+      PesertaUjikom.belongsToMany(models.Apl02Dynamic,{
+        through:models.Apl02DinaPeserta,
+        foreignKey:'pesertaUjikomId',
+        otherKey:'apl02DynamicId'
       })
       // bukti porto, umpanbalik dan punya satu frak01
     }
