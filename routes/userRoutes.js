@@ -8,6 +8,9 @@ routes.post('/register', userController.registerUser)
 // login per role
 routes.get('/login', userController.loginRole)
 
+// list news
+routes.get ('/news', userController.newsList)
+
 routes.use(authentication)
 // user melihat jadwal uji (all user)
 routes.get('/jadwal-uji', userController.jadwalUji)
@@ -54,43 +57,32 @@ routes.delete('/admin/hapus-data-apl01/:id', userController.hapusDataAPL01)
 routes.delete('/admin/hapus-detil-apl02/:id', userController.hapusApl02DinaPeserta)
 // admin list apl02dinaPeserta dengan include apl02 base
 routes.get('/admin/list-apl02', userController.listApl02Dina)
+// admin hapus frak01 peserta
+routes.delete('/admin/hapus-frak01/:idPeserta', userController.hapusFrak01)
 
 // admin membuat jadwal ujikom
 routes.post('/admin/buat-jadwal', userController.buatJadwal)
 routes.patch ('/admin/ganti-jadwal/:id', userController.gantiJadwal)
 routes.get('/admin/list-jadwal',userController.listJadwal )
 // admin mencocokan jadwal dengan skema
-
-// admin mengganti jadwal 
-
+routes.post('/admin/plot-jadwal/:idJadwal', userController.plotJadwal)
+// admin mengganti jadwalskemaujikom
+routes.put('/admin/edit-jadwal/:idJadwal', userController.editJadwal)
 // admin menghapus jadwal
+routes.delete('/admin/hapus-jadwalWaktu/:idJadwal', userController.hapusJadwalSkema)
+//ini akan trigger jadwalUjikomId di peserta akan terhapus
+routes.delete('/admin/hapus-jadwal/:idJadwal', userController.hapusJadwal)
+
 // admin mengecek keseluruhan field yuang diisi lalu menyimpan edit data  skemaUjikomId di tabel mahasiswa untuk memverifikasi
 
-// admin menjadwalkan jadwal uji dan plot asesor beserta peserta
-
-// admin membuat kelas ujikom
-
-// admin membuat skema baru
-
-
-
-
-
-
-// admin mengubah jadwal ujikom
-
-
-// admin melihat jadwal uji
-
-
-
-// admin melakukan penghapusan jadwal uji
-
+// admin create news
+routes.post ('/admin/create-news', userController.createNews)
+// admin update news
+routes.patch('/admin/update-news/:idBerita', userController.updateNews)
+// admin delete news
+routes.delete('/admin/delete-news/:idBerita', userController.deleteBerita)
 
 // admin overide pemasukkan nilai hasil ujikom
-
-
-// admin melakukan pengesahan terhadap APL 01 dan APL 02
 
 
 // admin membuat rekaman asesom

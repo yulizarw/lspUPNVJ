@@ -16,7 +16,7 @@ module.exports = {
         key: 'id' // Column name
       },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      onDelete: 'SET NULL'
     });
   },
 

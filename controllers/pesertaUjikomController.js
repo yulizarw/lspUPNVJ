@@ -365,7 +365,7 @@ module.exports = class pesertaUjikomController {
           {model:User, attributes:['userName']}
         ]
       })
-
+    
       let findTUK = await Tuk.findOne({
         where:{skemaUjikomId:filterPeserta.dataValues.SkemaUjikom.id},
         include:{
@@ -388,7 +388,7 @@ module.exports = class pesertaUjikomController {
           }
         }
       })
-      console.log(new Date(findJadwal.dataValues.JadwalUjikoms),'<<')
+     
       if (pesertaIsLogin === 'peserta ujikom') {
         let params = {
           skemaSertifikasi:filterPeserta.dataValues.SkemaUjikom.namaSkema,
@@ -409,10 +409,11 @@ module.exports = class pesertaUjikomController {
         }
 
         let createFrak01 = await FrAk01.create(params)
-
+       
         if (createFrak01){
           res.status(201).json(params)
-
+          filterPeserta.frAK01 = 'Sudah Terisi'
+          await filterPeserta.save()
         }else{
           res.status(400).json('Frak01 tidak tersimpan')
         }
