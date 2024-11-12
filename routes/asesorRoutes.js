@@ -8,6 +8,9 @@ routes.use(authentication)
 routes.post('/update-data-diri', asesorController.updateProfil)
 // melakukan perubahan pada data diri
 routes.patch('/ubah-data-diri', asesorController.ubahProfil)
+// melihat data diri
+routes.get('/lihat-data-diri', asesorController.fetchDataDiriAsesor)
+
 
 // asesor memilih skema ujikom
 routes.put('/memilih-skema', asesorController.memilihSkema)

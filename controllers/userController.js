@@ -146,7 +146,7 @@ module.exports = class userController {
       let params = {
         userName: req.body.userName,
         password: req.body.password,
-        role: req.body.role
+        // role: req.body.role
       };
       let loginUser = await User.findOne({
         where: { userName: params.userName },
@@ -170,11 +170,11 @@ module.exports = class userController {
           },
           process.env.SECRET
         );
-        let allowedRoles = ['Admin', 'Asesor', 'Peserta Ujikom']
+        // let allowedRoles = ['Admin', 'Asesor', 'Peserta Ujikom']
 
-        let matchedRoles = allowedRoles.map(role => role === req.body.role ? req.body.role : null).filter(role => role)
+        // let matchedRoles = allowedRoles.map(role => role === req.body.role ? req.body.role : null).filter(role => role)
 
-        if (matchedRoles.length > 0 && matchedRoles[0] === loginUser.userRole) {
+        // if (matchedRoles.length > 0 && matchedRoles[0] === loginUser.userRole) {
           res.status(201).json({
             id: loginUser.id,
             access_token,
@@ -186,9 +186,9 @@ module.exports = class userController {
             phone: loginUser.userPhone,
             domisili: loginUser.userDomisili
           });
-        } else {
-          res.status(401).json('Mohon Maaf anda tidak memiliki akses')
-        }
+        // } else {
+        //   res.status(401).json('Mohon Maaf anda tidak memiliki akses')
+        // }
       } else {
         res.status(400).json("Password / Username are incorrect");
       }
@@ -253,20 +253,35 @@ module.exports = class userController {
   }
   // all list skema
   static async listAllSkema(req, res) {
+    
     try {
       let userisLogin = req.userLogin
-      console.log(userisLogin)
+      let adminIsLogin = userisLogin.role.toLowerCase()
       if (userisLogin) {
-        let listAllSkema = await SkemaUjikom.findAll()
+        let findAllJadwal = await SkemaUjikom.findAll({
+          include: [
+            {
+              model: PesertaUjikom
+            },
+            {
+              model: JadwalUjikom
+            },
+            {
+              model: Tuk
+            }
+          ]
+        })
 
-        if (listAllSkema.length > 0) {
-          res.status(200).json(listAllSkema)
-        } else {
-          res.status(400).json('Tidak Ada Skema Ujikom untuk saat ini')
-        }
-      } else {
-        res.status(401).json('Anda Tidak Memiliki Akses')
-      }
+        let findJadwal = await JadwalUjikom.findAll({
+          include: [
+            {
+              model: PesertaUjikom
+            }
+          ]
+        })
+        res.status(201).json({ findAllJadwal, findJadwal })
+      } else { }
+
     } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
@@ -274,28 +289,7 @@ module.exports = class userController {
       })
     }
   }
-  // detail MUK on specific MUK id
-  // static async detailMUK(req,res){
-  //   try{
-  //     let userIsLogin = req.userLogin
-  //     let {id} = req.params
-
-  //     if(userIsLogin){
-  //       let detailedMUK = await Apl02Dynamic.findOne({
-  //         where:{baseId:id}
-  //       })
-  //       res.status(200).json(detailedMUK)
-  //     }else{
-  //       res.status(401).json('Anda Tidak Memiliki Akses')
-  //     }
-
-  //   }catch(error){
-  //     res.status(500).json({
-  //       message:'Internal Server Error',
-  //       error:error.message
-  //     })
-  //   }
-  // }
+  
   static async detailAllMUK(req, res) {
     try {
       let userIsLogin = req.userLogin

@@ -27,6 +27,8 @@ routes.put('/pilih-skema', pesertaUjikomController.pilihSkema)
 routes.post('/pengisian-apl02-detil', pesertaUjikomController.detilAPL02)
 // peserta mengisi bukti portofolio
 routes.post('/isi-bukti-portofolio', pesertaUjikomController.isiPortofolio)
+// peserta melihat bukti portofolio
+routes.get('/lihat-portofolio', pesertaUjikomController.checkPorto)
 // peserta mengisi frak01
 routes.post('/isi-frak01', pesertaUjikomController.isiFrak01)
 

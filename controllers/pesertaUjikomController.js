@@ -44,7 +44,7 @@ module.exports = class pesertaUjikomController {
           } else {
             let postPendaftaran = await PesertaUjikom.create(params)
             if (postPendaftaran) {
-              res.status(201).json(`Pendataan Peserta ${params.namaPeserta} Berhasil `)
+              res.status(201).json(`Pendataan Peserta Berhasil`)
             } else {
               res.status(400).json('Pendataan Peserta Tidak Berhasil')
             }
@@ -71,12 +71,18 @@ module.exports = class pesertaUjikomController {
         where:{userId:userIsLogin.id},
         include:[
           {model: JadwalUjikom},
-          {model: SkemaUjikom}
+          {model: SkemaUjikom},
+          {model:BuktiPortfolio}
         ]
       })
 
       if (userIsLogin.role.toLowerCase() === 'peserta ujikom') {
-        res.status(200).json(filterPeserta)
+        if (filterPeserta) {
+          res.status(200).json(filterPeserta)
+
+        } else {
+          res.status(400).json('Anda Belum Mengisi Kelengkapan data Profil')
+        }
       } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
@@ -157,20 +163,48 @@ module.exports = class pesertaUjikomController {
       let userIsLogin = req.userLogin
       let id = userIsLogin.id
       if (userIsLogin.role.toLowerCase() === 'peserta ujikom') {
-        let findSchedule = await JadwalUjikom.findOne({
-          where: { pesertaUjikomId: id }
-        })
+        // let findSchedule = await JadwalUjikom.findAll({
+        //   include:{
+        //     model:PesertaUjikom
+        //   },
+        //   where:{
+        //     id
+        //   }
+        // })
+        // let findDataPeserta = await PesertaUjikom.findOne({
+        //   where: { userId: id }
+        // })
+        // if (findSchedule && findDataPeserta) {
+        //   res.status(200).json(findSchedule)
+        // } if (!findSchedule) {
+        //   res.status(401).json('Anda Belum Mendaftar Pada Suatu Skema Ujikom, silahkan mendaftarkan diri dahulu')
+        // } else {
+        //   res.status(401).json('Anda Belum Memiliki Jadwal Ujikom, harap mendaftar ke Skema atau silahkan tunggu admin untuk melakukan Plotting')
+        // }
 
-        let findDataPeserta = await PesertaUjikom.findOne({
-          where: { userId: id }
-        })
-        if (findSchedule && findDataPeserta) {
-          res.status(200).json(findSchedule)
-        } if (!findSchedule) {
-          res.status(401).json('Anda Belum Mendaftar Pada Suatu Skema Ujikom, silahkan mendaftarkan diri dahulu')
-        } else {
-          res.status(401).json('Anda Belum Memiliki Jadwal Ujikom, harap mendaftar ke Skema atau silahkan tunggu admin untuk melakukan Plotting')
+        let findOneJadwal = await SkemaUjikom.findOne({
+          where: {}, // Kondisi untuk SkemaUjikom (kosong jika tidak ada kondisi khusus)
+          include: [
+            {
+              model: PesertaUjikom,
+              where: { userId:id }, // Sesuaikan dengan ID peserta yang dicari
+              include: [
+                {
+                  model: JadwalUjikom, // Mengambil jadwal hanya untuk peserta terkait
+                }
+              ]
+            },
+            {
+              model: Tuk, // Jika masih ingin menampilkan TUK (tidak terkait Peserta)
+            }
+          ]
+        });
+        if(findOneJadwal){
+          res.status(200).json(findOneJadwal)
+        }else {
+          res.status(404).json('Tidak Ada Jadwal yang terdaftar untuk anda')
         }
+
       } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
@@ -247,7 +281,7 @@ module.exports = class pesertaUjikomController {
           if(namaSkema) cekDaftarPeserta.skemaUjikomId = searchSkema.id
           let saveUpdate = cekDaftarPeserta.save()
           if (saveUpdate){
-            res.status(201).json(`Anda Telah Memiliki skema ${namaSkema}`)
+            res.status(201).json(`Anda Telah berhasil memilih skema`)
           }
         }
       } else {
@@ -417,6 +451,32 @@ module.exports = class pesertaUjikomController {
         }else{
           res.status(400).json('Frak01 tidak tersimpan')
         }
+      }else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
+    }catch(error){
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      })
+    }
+  }
+
+  static async checkPorto (req,res) {
+    try {
+      let userIsLogin = req.userLogin
+      let pesertaIsLogin = userIsLogin.role.toLowerCase()
+
+      if (pesertaIsLogin == 'peserta ujikom'){
+        let filterPeserta = await PesertaUjikom.findOne({
+          where:{userId:userIsLogin.id},
+          include:[
+            {model: BuktiPortfolio},
+            // {model: SkemaUjikom, attributes:['id','namaSkema']},
+            // {model:User, attributes:['userName']}
+          ]
+        })
+        res.status(200).json(filterPeserta)
       }else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }

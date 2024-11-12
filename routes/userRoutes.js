@@ -6,7 +6,7 @@ routes.get('/', userController)
 // register per role
 routes.post('/register', userController.registerUser)
 // login per role
-routes.get('/login', userController.loginRole)
+routes.post('/login', userController.loginRole)
 
 // list news
 routes.get ('/news', userController.newsList)
