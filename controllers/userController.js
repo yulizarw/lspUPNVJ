@@ -5,22 +5,22 @@ const jwt = require("jsonwebtoken");
 const pesertaujikom = require('../models/pesertaujikom');
 
 module.exports = class userController {
-  
+
   // create news
-  static async createNews(req,res) {
-    try{
+  static async createNews(req, res) {
+    try {
       let userisLogin = req.userLogin
       let adminIsLogin = userisLogin.role.toLowerCase()
       if (adminIsLogin === 'admin') {
-        let {content, picture} = req.body
+        let { content, picture } = req.body
         let params = {
-          content,picture
+          content, picture
         }
 
         await News.create(params)
         res.status(201).json(params)
       }
-    }catch(error) {
+    } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message
@@ -28,16 +28,16 @@ module.exports = class userController {
     }
   }
 
-  static async newsList (req,res) {
+  static async newsList(req, res) {
     try {
       let findNews = await News.findAll()
- 
-      if (findNews.length == 0){
+
+      if (findNews.length == 0) {
         res.status(404).json('tidak ada berita')
-      }else {
+      } else {
         res.status(200).json(findNews)
       }
-    }catch(error) {
+    } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message
@@ -45,30 +45,30 @@ module.exports = class userController {
     }
   }
 
-  static async updateNews (req,res) {
+  static async updateNews(req, res) {
     try {
       let userisLogin = req.userLogin
       let adminIsLogin = userisLogin.role.toLowerCase()
-      let {idBerita} =req.params
-      let {content,picture} = req.body
-      if (adminIsLogin === 'admin'){
+      let { idBerita } = req.params
+      let { content, picture } = req.body
+      if (adminIsLogin === 'admin') {
         let findBerita = await News.findOne({
-          where:{
-            id:idBerita
+          where: {
+            id: idBerita
           }
         })
         if (findBerita) {
           if (content) findBerita.content = content
-          if(picture) findBerita.picture = picture
+          if (picture) findBerita.picture = picture
           await findBerita.save()
           res.status(201).json(`Berita berhasil diupdate`)
-        }else {
+        } else {
           res.status(404).json('Tidak ada Berita yang dimaksud')
         }
-      }else {
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-    }catch(error) {
+    } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message
@@ -76,28 +76,28 @@ module.exports = class userController {
     }
   }
 
-  static async deleteBerita (req,res) {
-    try{
+  static async deleteBerita(req, res) {
+    try {
       let userisLogin = req.userLogin
       let adminIsLogin = userisLogin.role.toLowerCase()
-      let {idBerita} =req.params
+      let { idBerita } = req.params
       let findBerita = await News.findOne({
-        where:{
-          id:idBerita
+        where: {
+          id: idBerita
         }
       })
-      if(adminIsLogin =='admin') {
+      if (adminIsLogin == 'admin') {
         if (findBerita) {
-          
+
           await findBerita.destroy()
           res.status(201).json(`Berita berhasil dihapus`)
-        }else {
+        } else {
           res.status(404).json('Tidak ada Berita yang dimaksud')
         }
-      }else {
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-    }catch(error) {
+    } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message
@@ -175,17 +175,17 @@ module.exports = class userController {
         // let matchedRoles = allowedRoles.map(role => role === req.body.role ? req.body.role : null).filter(role => role)
 
         // if (matchedRoles.length > 0 && matchedRoles[0] === loginUser.userRole) {
-          res.status(201).json({
-            id: loginUser.id,
-            access_token,
-            userName: loginUser.userName,
-            role: loginUser.userRole,
-            password: loginUser.userPassword,
-            photo: loginUser.userPhoto,
-            department: loginUser.userDepartment,
-            phone: loginUser.userPhone,
-            domisili: loginUser.userDomisili
-          });
+        res.status(201).json({
+          id: loginUser.id,
+          access_token,
+          userName: loginUser.userName,
+          role: loginUser.userRole,
+          password: loginUser.userPassword,
+          photo: loginUser.userPhoto,
+          department: loginUser.userDepartment,
+          phone: loginUser.userPhone,
+          domisili: loginUser.userDomisili
+        });
         // } else {
         //   res.status(401).json('Mohon Maaf anda tidak memiliki akses')
         // }
@@ -205,13 +205,47 @@ module.exports = class userController {
 
 
       if (userIsLogin) {
-        let allJadwalUji = await JadwalUjikom.findAll(); // Use singular form if the model is named 'jadwalUjikom'
+        let asesor = await Asesor.findOne({
+          where: { userId: userIsLogin.id }
+        })
+        if (asesor) {
+          let findJadwalSkemaUji = await JadwalSkemaUjikom.findOne({
+            where: { id: asesor.jadwalSkemaUjikomId },
+          })
+          if (findJadwalSkemaUji) {
+            let asesorJadwalUji = await JadwalUjikom.findOne({
+              where: { id: findJadwalSkemaUji.jadwalUjikomId }
+            })
 
-        if (allJadwalUji.length !== 0) {
-          res.status(200).json(allJadwalUji)
+            res.status(200).json(asesorJadwalUji)
+          } else {
+            res.status(404).json(null)
+          }
+        } else if (userIsLogin.role === 'Peserta Ujikom') {
+          let pesertaUjikom = await PesertaUjikom.findOne({
+            where: { userId: userIsLogin.id }
+          })
+          if (pesertaUjikom) {
+            let jadwalPeserta = await JadwalUjikom.findOne({
+              where: { id: pesertaUjikom.jadwalUjikomId }
+            })
+            if (jadwalPeserta) {
+              res.status(200).json(jadwalPeserta)
+            } else {
+              res.status(404).json(null)
+            }
+          }
         } else {
-          res.status(404).json('Belum Ada Jadwal Ujikom saat ini, cek kembali secara berkala')
+          let allJadwalUji = await JadwalUjikom.findAll(); // Use singular form if the model is named 'jadwalUjikom'
+
+          if (allJadwalUji.length !== 0) {
+            res.status(200).json(allJadwalUji)
+          } else {
+            res.status(404).json('Belum Ada Jadwal Ujikom saat ini, cek kembali secara berkala')
+          }
         }
+
+
       } else {
         res.status(404).json('Silahkan lakukan Log In terlebih dahulu');
       }
@@ -253,7 +287,7 @@ module.exports = class userController {
   }
   // all list skema
   static async listAllSkema(req, res) {
-    
+
     try {
       let userisLogin = req.userLogin
       let adminIsLogin = userisLogin.role.toLowerCase()
@@ -289,7 +323,7 @@ module.exports = class userController {
       })
     }
   }
-  
+
   static async detailAllMUK(req, res) {
     try {
       let userIsLogin = req.userLogin
@@ -820,7 +854,7 @@ module.exports = class userController {
       let { idJadwal } = req.params
       let { namaSkema } = req.body
 
-      
+
 
       let findSkema = await SkemaUjikom.findOne({
         where: {
@@ -833,7 +867,7 @@ module.exports = class userController {
           {
             model: JadwalUjikom
           },
-     
+
         ]
       })
 
@@ -853,19 +887,19 @@ module.exports = class userController {
           }
 
           let saveJadwal = await JadwalSkemaUjikom.create(params)
- 
+
           if (saveJadwal) {
             res.status(201).json(saveJadwal)
             let filterJadwal = await JadwalSkemaUjikom.findOne({
-              where:{
-                jadwalUjikomId:idJadwal
+              where: {
+                jadwalUjikomId: idJadwal
               },
-              attributes:['id'],
-            
+              attributes: ['id'],
+
             })
             const masukanJadwalkePeserta = await Promise.all(
               findPeserta.map(async (peserta) => {
-               
+
                 peserta.jadwalUjikomId = idJadwal
                 return await peserta.save()
               })
@@ -969,7 +1003,7 @@ module.exports = class userController {
       if (adminIsLogin === 'admin') {
         if (filterJadwalUjikom) {
           let deleteJadwal = await filterJadwalUjikom.destroy()
-      
+
           let valueIdJadwal = '0'
           if (deleteJadwal) {
             res.status(200).json('Jadwal Berhasil Dihapus')
@@ -1059,6 +1093,8 @@ module.exports = class userController {
       })
     }
   }
+
+  
   // news lsp
   // about LSP UPN VJ
   // reviewer LSP UPNVJ

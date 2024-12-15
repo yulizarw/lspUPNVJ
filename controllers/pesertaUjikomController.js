@@ -488,4 +488,52 @@ module.exports = class pesertaUjikomController {
     }
   }
 
+  static async listAPL02 (req,res) {
+    try {
+      const userIsLogin = req.userLogin
+      const pesertaIsLogin = userIsLogin.role.toLowerCase()
+      if (pesertaIsLogin == 'peserta ujikom'){
+        const findDataAsesi = await PesertaUjikom.findOne({
+          where:{
+            userId: userIsLogin.id
+          },
+          include:{model:SkemaUjikom}
+        })
+        
+        if (findDataAsesi){
+          const findAPL02 = await Apl02Base.findOne({
+            where:{
+              namaSkema : findDataAsesi.SkemaUjikom.namaSkema
+            }
+          })
+
+          if (findAPL02){
+            const findListAPL02 = await Apl02Dynamic.findAll({
+              where:{
+                baseId:findAPL02.id
+              },
+              order:[[
+                'unitKompetensiId','ASC'
+              ]]
+            })
+            res.status(200).json(findListAPL02)
+          }else {
+            res.status(404).json('Anda belum Memilih skema ujikom')
+          }
+         
+        }else {
+          res.status(404).json('Anda Belum Melengkapi Data Sebagai Asesi')
+        }
+      }else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
+
+    }catch(error){
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      })
+    }
+  }
+
 }

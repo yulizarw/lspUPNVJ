@@ -30,6 +30,12 @@ routes.post('/tambah-muk', asesorController.addMUK)
 // asesor update MUK di apl02
 routes.patch('/update-muk/:id', asesorController.updateMUK)
 
+// asesor hapus muk di apl02
+routes.delete('/delete-muk/:id',asesorController.deleteMUK)
+
+// list APL02 Asesor
+routes.get('/list-apl02', asesorController.listAPL02)
+
 // asesor delete per item MUK di apl 02
 
 // asesor delet all item di MUK di apl 02

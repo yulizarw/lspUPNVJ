@@ -27,7 +27,7 @@ routes.get('/list-detail-muk/:id', userController.detailAllMUK)
 routes.get('/list-skema/', userController.listAllSkema)
 // admin melakukan liust semua TUK
 routes.get('/list-TUK', userController.listTUK)
-// list jadwal skemaujikom
+
 
 
 // user admin

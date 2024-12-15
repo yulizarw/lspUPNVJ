@@ -25,6 +25,9 @@ routes.put('/pilih-skema', pesertaUjikomController.pilihSkema)
 
 // peserta melengkapi APL 02 dinamic setelah memilih skema
 routes.post('/pengisian-apl02-detil', pesertaUjikomController.detilAPL02)
+
+// peserta get pertanyaan apl 02
+routes.get('/get-apl02-pertanyaan', pesertaUjikomController.listAPL02)
 // peserta mengisi bukti portofolio
 routes.post('/isi-bukti-portofolio', pesertaUjikomController.isiPortofolio)
 // peserta melihat bukti portofolio
