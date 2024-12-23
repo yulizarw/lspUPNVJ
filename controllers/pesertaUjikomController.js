@@ -299,8 +299,6 @@ module.exports = class pesertaUjikomController {
       let userIsLogin = req.userLogin
       let pesertaIsLogin = userIsLogin.role.toLowerCase()
       if (pesertaIsLogin) {
- 
-
         let pesertaUjikom = await PesertaUjikom.findOne({
           where: { userId: userIsLogin.id },
           include:SkemaUjikom
@@ -316,16 +314,15 @@ module.exports = class pesertaUjikomController {
         })
 
         let params = {
-          dynamicFields: searchFormApl02.dynamicFields.map(dynamicField => ({
+          dynamicFields: req.body.map(dynamicField => ({
             // id: dynamicField.id,
             fieldName: dynamicField.fieldName,
             fieldQuestion: dynamicField.fieldQuestion,
-            fieldValue: req.body.fieldValue,
+            fieldValue: dynamicField.fieldValue,
             pesertaUjikomId : pesertaUjikom.id,
             apl02DynamicId:dynamicField.id
           }))
         }
-       
         const createdEntries = await Promise.all(
           params.dynamicFields.map(async (dynamicField) => {
             return await Apl02DinaPeserta.create({
@@ -338,6 +335,7 @@ module.exports = class pesertaUjikomController {
             });
           })
         );
+    
         if (createdEntries) {
           res.status(201).json(`Detil APL02 ${pesertaUjikom.namaPeserta} berhasil disimpan`)
           pesertaUjikom.apl02 = 'Sudah Terisi'
