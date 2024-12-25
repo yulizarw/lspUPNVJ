@@ -105,6 +105,58 @@ module.exports = (sequelize, DataTypes) => {
           msg:'FRAK 01 Harus Terisi'
         }
       }
+    },
+    portofolioAsesi: {
+      type:DataTypes.STRING
+    },
+    mapa01: {
+      type:DataTypes.STRING
+    },
+    mapa02: {
+      type:DataTypes.STRING
+    },
+    frak04:{
+      type:DataTypes.STRING
+    },
+    frak07:{
+      type:DataTypes.STRING
+    },
+    fria01:{
+      type:DataTypes.STRING
+    },
+    fria02:{
+      type:DataTypes.STRING
+    },
+    fria03:{
+      type:DataTypes.STRING
+    },
+    fria04a:{
+      type:DataTypes.STRING
+    },
+    fria04b:{
+      type:DataTypes.STRING
+    },
+    fria05:{
+      type:DataTypes.STRING
+    },
+    fria06:{
+      type:DataTypes.STRING
+    },
+    fria07:{
+      type:DataTypes.STRING
+    },
+    frak02:{
+      type:DataTypes.STRING
+    },
+    frak03:{
+      type:DataTypes.STRING
+    
+    },
+    frak05:{
+      type:DataTypes.STRING
+    },
+    frak06:{
+      type:DataTypes.STRING
     }
   }, {
     sequelize,

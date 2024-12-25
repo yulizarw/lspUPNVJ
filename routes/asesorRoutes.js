@@ -2,6 +2,7 @@ const routes = require ('express').Router()
 const {authentication} = require('../middlewares/auth')
 
 const asesorController = require('../controllers/asesorController')
+const {uploadFileAsesi, uploadFileMuk} = require('../middlewares/storage')
 // user asesor
 // asesor melakukan pengisian data diri
 routes.use(authentication)
@@ -39,6 +40,16 @@ routes.get('/list-apl02', asesorController.listAPL02)
 // asesor delete per item MUK di apl 02
 
 // asesor delet all item di MUK di apl 02
+// upload file MUK
+routes.post('/upload-muk',uploadFileMuk.single('file'), asesorController.postMUK)
+
+//  Route untuk mendapatkan file MUK
+routes.get('/getMUK/:id', asesorController.getFileMUK);
+routes.get ('/getAllMUK', asesorController.getAllFileMUK)
+// Route untuk memperbarui file
+routes.put('/editMUK/:id', uploadFileMuk.single('file'), asesorController.updateFileMUK);
+// route untuk delet MUK
+routes.delete('/deleteMUK/:id', asesorController.deleteFileMUK);
 
 
 

@@ -1,5 +1,6 @@
 const routes = require('express').Router()
 const pesertaUjikomController = require('../controllers/pesertaUjikomController')
+const {uploadFileAsesi, uploadFileMuk} = require('../middlewares/storage')
 const {authentication} = require('../middlewares/auth')
 
 routes.get('/index', pesertaUjikomController)
@@ -35,6 +36,11 @@ routes.get('/lihat-portofolio', pesertaUjikomController.checkPorto)
 // peserta mengisi frak01
 routes.post('/isi-frak01', pesertaUjikomController.isiFrak01)
 
+//  Route untuk mendapatkan file MUK
+routes.get('/getMUK/:dokumen', pesertaUjikomController.getFileMUK);
+routes.get ('/getAllMUK', pesertaUjikomController.getAllFileMUK)
+routes.post('/upload-file',uploadFileAsesi.single('file'), pesertaUjikomController.postMUK)
+routes.put('/editMUK/:namaFile', uploadFileAsesi.single('file'), pesertaUjikomController.updateFileAsesiMUK);
 // peserta melakukan banding
 
 module.exports=routes
