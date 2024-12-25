@@ -4,14 +4,15 @@ const config =require('../config/config')
 
 const authentication = async (req, res, next) => {
   try {
-      const { access_token } = req.headers;
+    //   const { access_token } = req.headers;
+    const access_token = req.headers['access_token'] || req.query.access_token;
       console.log(access_token)
       if (access_token) {
           req.userLogin = jwt.verify(access_token, process.env.SECRET);
 
           
           if (req.userLogin.role.toLowerCase() === "admin") {
-              await User.findByPk(req.userLogin.id)
+              await User.findByPk(req.userLogin.id) 
                   .then((admin) => {
                       if (!admin) {
                           res.status(400).json("Wrong Auth");

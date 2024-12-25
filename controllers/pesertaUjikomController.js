@@ -1,4 +1,4 @@
-const { apl01, User, Asesor, PesertaUjikom, JadwalUjikom, Apl01, Apl02Base, Apl02Dynamic, SkemaUjikom, Apl02DinaPeserta, BuktiPortfolio, Tuk, JadwalSkemaUjikom, FrAk01 } = require('../models')
+const { fileMUK, User, Asesor, PesertaUjikom, JadwalUjikom, Apl01, Apl02Base, Apl02Dynamic, SkemaUjikom, Apl02DinaPeserta, BuktiPortfolio, Tuk, JadwalSkemaUjikom, FrAk01 } = require('../models')
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -631,7 +631,7 @@ module.exports = class pesertaUjikomController {
       if (!filePath || !fs.existsSync(filePath)) {
         return res.status(404).json({ message: `File untuk dokumen ${dokumen} tidak ditemukan.` });
       }
-
+      console.log(filePath)
       res.download(filePath, path.basename(filePath));
     } catch (error) {
       res.status(500).json({
@@ -640,6 +640,47 @@ module.exports = class pesertaUjikomController {
       });
     }
   };
+
+  static async downloadFileStream(req,res) {
+    try{
+      const { dokumen } = req.params;
+      const userId = req.userLogin.id
+
+      if (!dokumen) {
+        return res.status(400).json({
+          message: 'Parameter dokumenKe harus diisi dengan nilai 1-24.',
+        });
+      } 
+     
+      
+      const peserta = await PesertaUjikom.findOne({ where: { userId }, include: [{ model: SkemaUjikom }] });
+      const file = await fileMUK.findOne({ where: { namaSkema:peserta.SkemaUjikom.namaSkema, fileName:dokumen } });
+      if (!peserta) {
+        return res.status(404).json({ message: 'Peserta tidak ditemukan.' });
+      }
+      console.log(file)
+      const filePath = file.path;
+
+      if (!filePath || !fs.existsSync(filePath)) {
+        return res.status(404).json({ message: `File untuk dokumen ${dokumen} tidak ditemukan.` });
+      }
+      console.log(`Mencoba mengunduh file di path: ${filePath}`);
+      // res.download(filePath, path.basename(filePath));
+      res.download(filePath, path.basename(filePath), (err) => {
+        if (err) {
+          return res.status(500).json({
+            message: 'Gagal mengunduh file.',
+            error: err.message,
+          });
+        }
+      })
+    }catch(error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message,
+      });
+    }
+  }
 
   static async getAllFileMUK(req, res) {
     try {
@@ -659,6 +700,32 @@ module.exports = class pesertaUjikomController {
 
 
     } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message,
+      });
+    }
+  }
+
+  static async streamFileMUK (req,res) {
+    try {
+      const userId = req.userLogin.id
+      const peserta = await PesertaUjikom.findOne({ where: { userId }, include: [{ model: SkemaUjikom }] });
+      if (!peserta) {
+        res.status(404).json("anda belum terdaftar")
+      }
+      const file = await fileMUK.findAll({ where: { namaSkema:peserta.SkemaUjikom.namaSkema } });
+      // const file = peserta
+      if (!file) {
+        return res.status(404).json({ message: 'File tidak ditemukan' });
+      }
+
+      res.json({
+        message: 'File ditemukan',
+        file: file,
+      });
+
+    }catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message,

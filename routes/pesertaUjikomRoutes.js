@@ -41,6 +41,9 @@ routes.get('/getMUK/:dokumen', pesertaUjikomController.getFileMUK);
 routes.get ('/getAllMUK', pesertaUjikomController.getAllFileMUK)
 routes.post('/upload-file',uploadFileAsesi.single('file'), pesertaUjikomController.postMUK)
 routes.put('/editMUK/:namaFile', uploadFileAsesi.single('file'), pesertaUjikomController.updateFileAsesiMUK);
+
+routes.get ('/stream-muk', pesertaUjikomController.streamFileMUK)
+routes.get('/download-stream/:dokumen', pesertaUjikomController.downloadFileStream)
 // peserta melakukan banding
 
 module.exports=routes
