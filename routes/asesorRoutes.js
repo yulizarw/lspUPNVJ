@@ -42,7 +42,6 @@ routes.get('/list-apl02', asesorController.listAPL02)
 // asesor delet all item di MUK di apl 02
 // upload file MUK
 routes.post('/upload-muk',uploadFileMuk.single('file'), asesorController.postMUK)
-
 //  Route untuk mendapatkan file MUK
 routes.get('/getMUK/:id', asesorController.getFileMUK);
 routes.get ('/getAllMUK', asesorController.getAllFileMUK)
@@ -51,6 +50,10 @@ routes.put('/editMUK/:id', uploadFileMuk.single('file'), asesorController.update
 // route untuk delet MUK
 routes.delete('/deleteMUK/:id', asesorController.deleteFileMUK);
 
+// routes untuk download dari folder muk
+routes.get('/downloadFileMUK/:dokumen', asesorController.downloadFileMUK)
+// routes untuk download dari folder asesi by name
+routes.get ('/downloadFileAsesi/:dokumen', asesorController.downloadFileAsesi)
 
 
 

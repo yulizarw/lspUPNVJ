@@ -20,9 +20,9 @@ const {uploadFileAsesi, uploadFileMuk} = require('../middlewares/storage')
 
 routes.use(authentication)
 // admin
+
 // upload file MUK
 routes.post('/upload-muk',uploadFileMuk.single('file'), adminController.postMUK)
-
 //  Route untuk mendapatkan file MUK
 routes.get('/getMUK/:id', adminController.getFileMUK);
 routes.get ('/getAllMUK', adminController.getAllFileMUK)
@@ -30,6 +30,10 @@ routes.get ('/getAllMUK', adminController.getAllFileMUK)
 routes.put('/editMUK/:id', uploadFileMuk.single('file'), adminController.updateFileMUK);
 // route untuk delet MUK
 routes.delete('/deleteMUK/:id', adminController.deleteFileMUK);
+// routes untuk download dari folder muk
+routes.get('/downloadFileMUK/:dokumen', adminController.downloadFileMUK)
+// routes untuk download dari folder asesi by name
+routes.get ('/downloadFileAsesi/:dokumen', adminController.downloadFileAsesi)
 
 // list MUK
 // create schedule

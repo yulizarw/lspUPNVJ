@@ -436,7 +436,7 @@ module.exports = class userController {
       let userisLogin = req.userLogin
       let adminIsLogin = userisLogin.role.toLowerCase()
 
-      if (adminIsLogin === 'admin') {
+      if (adminIsLogin === 'admin' || adminIsLogin == 'asesor') {
         let listNamaPeserta = await PesertaUjikom.findAll()
         if (listNamaPeserta) {
           res.status(200).json(listNamaPeserta)

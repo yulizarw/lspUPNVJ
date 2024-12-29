@@ -658,7 +658,7 @@ module.exports = class pesertaUjikomController {
       if (!peserta) {
         return res.status(404).json({ message: 'Peserta tidak ditemukan.' });
       }
-      console.log(file)
+     
       const filePath = file.path;
 
       if (!filePath || !fs.existsSync(filePath)) {

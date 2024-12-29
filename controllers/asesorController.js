@@ -1,7 +1,8 @@
-const { User,fileMUK, Asesor, JadwalUjikom, Apl02Base, Apl02Dynamic, SkemaUjikom, JadwalSkemaUjikom, Apl02DinaPeserta } = require('../models')
+const { User,fileMUK, Asesor, JadwalUjikom, Apl02Base, Apl02Dynamic, SkemaUjikom, JadwalSkemaUjikom, Apl02DinaPeserta, PesertaUjikom} = require('../models')
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const path = require('path');
 
 const fs = require('fs');
 
@@ -571,6 +572,84 @@ module.exports = class asesorController {
       }
 
     } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message,
+      });
+    }
+  }
+
+  static async downloadFileMUK (req,res) {
+    try {
+      const { dokumen } = req.params;
+      const isAllowed = req.userLogin.role.toLowerCase()
+      const namaSkema = req.body.namaSkema
+      if (!dokumen) {
+        return res.status(400).json({
+          message: 'Parameter dokumenKe harus diisi dengan nilai 1-24.',
+        });
+      } 
+      
+      const file = await fileMUK.findOne({ where: {namaSkema, fileName:dokumen } });
+      if (!isAllowed || isAllowed !== 'asesor' ) {
+        return res.status(404).json({ message: 'Anda Tidak Memiliki Akses.' });
+      }
+     
+      const filePath = file.path;
+
+      if (!filePath || !fs.existsSync(filePath)) {
+        return res.status(404).json({ message: `File untuk dokumen ${dokumen} tidak ditemukan.` });
+      }
+      console.log(`Mencoba mengunduh file di path: ${filePath}`);
+      // res.download(filePath, path.basename(filePath));
+      res.download(filePath, path.basename(filePath), (err) => {
+        if (err) {
+          return res.status(500).json({
+            message: 'Gagal mengunduh file.',
+            error: err.message,
+          });
+        }
+      })
+    }catch(error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message,
+      });
+    }
+  }
+
+  static async downloadFileAsesi (req,res) {
+    try {
+      const { dokumen } = req.params;
+      const isAllowed = req.userLogin.role.toLowerCase()
+      const {namaSkema, namaPeserta }= req.body
+      
+      if (!dokumen) {
+        return res.status(400).json({
+          message: 'Parameter dokumenKe harus diisi dengan nilai 1-24.',
+        });
+      } 
+      const fileAsesi = await PesertaUjikom.findOne ({where: {namaPeserta}})
+      if (!isAllowed || isAllowed !== 'asesor' ) {
+        return res.status(404).json({ message: 'Anda Tidak Memiliki Akses.' });
+      }
+     
+      const filePath = fileAsesi[dokumen];
+
+      if (!filePath || !fs.existsSync(filePath)) {
+        return res.status(404).json({ message: `File untuk dokumen ${dokumen} tidak ditemukan.` });
+      }
+      console.log(`Mencoba mengunduh file di path: ${filePath}`);
+      // res.download(filePath, path.basename(filePath));
+      res.download(filePath, path.basename(filePath), (err) => {
+        if (err) {
+          return res.status(500).json({
+            message: 'Gagal mengunduh file.',
+            error: err.message,
+          });
+        }
+      })
+    }catch(error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message,
