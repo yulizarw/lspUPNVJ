@@ -71,9 +71,9 @@ module.exports = class pesertaUjikomController {
       let filterPeserta = await PesertaUjikom.findOne({
         where: { userId: userIsLogin.id },
         include: [
-          // { model: JadwalUjikom },
-          // { model: SkemaUjikom },
-          // { model: BuktiPortfolio }
+          { model: JadwalUjikom },
+          { model: SkemaUjikom },
+          { model: BuktiPortfolio }
         ]
       })
 

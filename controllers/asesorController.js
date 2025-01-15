@@ -479,8 +479,8 @@ module.exports = class asesorController {
 
   static async getAllFileMUK(req, res) {
     try {
-      const {namaSkema} = req.body
-
+      const {namaSkema} = req.params
+      
       let adminIsLogin = req.userLogin.role.toLowerCase()
 
       if (adminIsLogin ==='asesor') {

@@ -44,7 +44,7 @@ routes.get('/list-apl02', asesorController.listAPL02)
 routes.post('/upload-muk',uploadFileMuk.single('file'), asesorController.postMUK)
 //  Route untuk mendapatkan file MUK
 routes.get('/getMUK/:id', asesorController.getFileMUK);
-routes.get ('/getAllMUK', asesorController.getAllFileMUK)
+routes.get ('/getAllMUK/:namaSkema', asesorController.getAllFileMUK)
 // Route untuk memperbarui file
 routes.put('/editMUK/:id', uploadFileMuk.single('file'), asesorController.updateFileMUK);
 // route untuk delet MUK
