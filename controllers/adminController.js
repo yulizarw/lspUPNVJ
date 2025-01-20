@@ -18,7 +18,8 @@ module.exports = class adminController {
 
         // Simpan metadata file di database
         await fileMUK.create({
-          fileName: uploadedFile.originalname,
+          // fileName: uploadedFile.originalname,
+          fileName:req.body.fileName,
           path: uploadedFile.path,
           mimeType: uploadedFile.mimetype,
           adminId:req.userLogin.id,

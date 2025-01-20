@@ -425,7 +425,8 @@ module.exports = class asesorController {
 
         // Simpan metadata file di database
         await fileMUK.create({
-          fileName: uploadedFile.originalname,
+          // fileName: uploadedFile.originalname,
+          fileName:req.body.fileName,
           path: uploadedFile.path,
           mimeType: uploadedFile.mimetype,
           asesorId:req.userLogin.id,
@@ -579,48 +580,108 @@ module.exports = class asesorController {
     }
   }
 
-  static async downloadFileMUK (req,res) {
-    try {
-      const { dokumen } = req.params;
-      const isAllowed = req.userLogin.role.toLowerCase()
-      const namaSkema = req.body.namaSkema
-      if (!dokumen) {
-        return res.status(400).json({
-          message: 'Parameter dokumenKe harus diisi dengan nilai 1-24.',
-        });
-      } 
+  // static async downloadFileMUK (req,res) {
+  //   try {
+  //     const { id } = req.params;
+  //     const isAllowed = req.userLogin.role.toLowerCase()
+  //     // const namaSkema = req.body.namaSkema
+  //     if (!id) {
+  //       return res.status(400).json({
+  //         message: 'Parameter dokumenKe harus diisi dengan nilai 1-24.',
+  //       });
+  //     } 
       
-      const file = await fileMUK.findOne({ where: {namaSkema, fileName:dokumen } });
-      if (!isAllowed || isAllowed !== 'asesor' ) {
-        return res.status(404).json({ message: 'Anda Tidak Memiliki Akses.' });
-      }
+  //     const file = await fileMUK.findOne({ where: {id } });
+  //     if (!isAllowed || isAllowed !== 'asesor' ) {
+  //       return res.status(404).json({ message: 'Anda Tidak Memiliki Akses.' });
+  //     }
      
-      const filePath = file.path;
+  //     const filePath = file.path;
 
-      if (!filePath || !fs.existsSync(filePath)) {
-        return res.status(404).json({ message: `File untuk dokumen ${dokumen} tidak ditemukan.` });
+  //     if (!filePath || !fs.existsSync(filePath)) {
+  //       return res.status(404).json({ message: `File  tidak ditemukan.` });
+  //     }
+  //     // console.log(`Mencoba mengunduh file di path: ${filePath}`);
+  //     // res.download(filePath, path.basename(filePath));
+
+  //     res.download(filePath, path.basename(filePath), (err) => {
+  //       if (err) {
+  //         return res.status(500).json({
+  //           message: 'Gagal mengunduh file.',
+  //           error: err.message,
+  //         });
+  //       }
+  //     })
+  //   }catch(error) {
+  //     res.status(500).json({
+  //       message: 'Internal Server Error',
+  //       error: error.message,
+  //     });
+  //   }
+  // }
+
+  static async downloadFileMUK(req, res) {
+    try {
+      const { id } = req.params; // Ambil parameter id dari URL
+      const userRole = req.userLogin.role.toLowerCase(); // Periksa role pengguna
+  
+      // Validasi parameter id
+      if (!id) {
+        return res.status(400).json({
+          message: "Parameter id harus diisi.",
+        });
       }
-      console.log(`Mencoba mengunduh file di path: ${filePath}`);
-      // res.download(filePath, path.basename(filePath));
-      res.download(filePath, path.basename(filePath), (err) => {
+  
+      // Validasi role pengguna
+      if (!userRole || userRole !== "asesor") {
+        return res.status(403).json({
+          message: "Anda tidak memiliki akses untuk mengunduh file ini.",
+        });
+      }
+  
+      // Cari file berdasarkan id
+      const file = await fileMUK.findOne({ where: { id } });
+      if (!file) {
+        return res.status(404).json({
+          message: "File tidak ditemukan di database.",
+        });
+      }
+  
+      // Ambil path file dan nama file asli dari database
+      const filePath = file.path;
+      const originalFileName = file.fileName; // Nama file asli (dengan ekstensi)
+  
+      // Periksa apakah file ada di file system
+      if (!filePath || !fs.existsSync(filePath)) {
+        return res.status(404).json({
+          message: "File tidak ditemukan pada path yang disimpan.",
+        });
+      }
+  
+      // Kirim file untuk diunduh dengan nama file asli
+      res.download(filePath, originalFileName, (err) => {
         if (err) {
+          console.error("Error saat mengunduh file:", err.message);
           return res.status(500).json({
-            message: 'Gagal mengunduh file.',
+            message: "Gagal mengunduh file.",
             error: err.message,
           });
         }
-      })
-    }catch(error) {
+      });
+    } catch (error) {
+      console.error("Error internal server:", error.message);
       res.status(500).json({
-        message: 'Internal Server Error',
+        message: "Internal Server Error",
         error: error.message,
       });
     }
   }
+  
+  
 
   static async downloadFileAsesi (req,res) {
     try {
-      const { dokumen } = req.params;
+      const { id } = req.params;
       const isAllowed = req.userLogin.role.toLowerCase()
       const {namaSkema, namaPeserta }= req.body
       

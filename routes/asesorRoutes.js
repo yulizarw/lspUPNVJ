@@ -51,9 +51,9 @@ routes.put('/editMUK/:id', uploadFileMuk.single('file'), asesorController.update
 routes.delete('/deleteMUK/:id', asesorController.deleteFileMUK);
 
 // routes untuk download dari folder muk
-routes.get('/downloadFileMUK/:dokumen', asesorController.downloadFileMUK)
+routes.get('/downloadFileMUK/:id', asesorController.downloadFileMUK)
 // routes untuk download dari folder asesi by name
-routes.get ('/downloadFileAsesi/:dokumen', asesorController.downloadFileAsesi)
+routes.get ('/downloadFileAsesi/:id', asesorController.downloadFileAsesi)
 
 
 
