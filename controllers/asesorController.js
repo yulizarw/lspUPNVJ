@@ -1,4 +1,4 @@
-const { User,fileMUK, Asesor, JadwalUjikom, Apl02Base, Apl02Dynamic, SkemaUjikom, JadwalSkemaUjikom, Apl02DinaPeserta, PesertaUjikom} = require('../models')
+const { User, fileMUK, Asesor, JadwalUjikom, Apl02Base, Apl02Dynamic, SkemaUjikom, JadwalSkemaUjikom, Apl02DinaPeserta, PesertaUjikom } = require('../models')
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -32,7 +32,7 @@ module.exports = class asesorController {
           }
 
           let findAsesorData = await Asesor.findOne({
-            where: { userId:userisLogin.id }
+            where: { userId: userisLogin.id }
           })
 
           if (findAsesorData) {
@@ -48,7 +48,7 @@ module.exports = class asesorController {
                   namaSkema,
                   asesorId: findAsesorData2.id
                 }
-               
+
                 let saveToAPL02Base = await Apl02Base.create(paramsBuatAPL02)
               } else {
                 res.status(401).json('Terjadi Kesalahan pada Sistem Kami')
@@ -112,119 +112,119 @@ module.exports = class asesorController {
       })
     }
   }
-    //  tambah MUK
-    // static async addMUK(req, res) {
-    //   try {
-    //     let userisLogin = req.userLogin
-    //     let asesorisLogin = false
-    //     let id = userisLogin.id
-    //     let idAsesor = await Asesor.findOne({ where: { userId: id } })
+  //  tambah MUK
+  // static async addMUK(req, res) {
+  //   try {
+  //     let userisLogin = req.userLogin
+  //     let asesorisLogin = false
+  //     let id = userisLogin.id
+  //     let idAsesor = await Asesor.findOne({ where: { userId: id } })
 
-    //     if (userisLogin.role.toLowerCase() === 'asesor') {
-    //       asesorisLogin = true
+  //     if (userisLogin.role.toLowerCase() === 'asesor') {
+  //       asesorisLogin = true
 
-    //       if (asesorisLogin == true) {
-    //         let { namaSkema, dynamicFields } = req.body
-            
-    //         let base = await Apl02Base.create({ namaSkema, asesorId: idAsesor.id });
+  //       if (asesorisLogin == true) {
+  //         let { namaSkema, dynamicFields } = req.body
 
-    //         let dynamicEntries = dynamicFields.map(field => ({
-    //           unitKompetensiId: field.unitKompetensiId,
-    //           fieldQuestion: field.fieldQuestion,
-    //           fieldName: field.fieldName,
-    //           fieldValue: field.fieldValue,
-    //           baseId: base.asesorId,
-    //         }));
-    //         await Apl02Dynamic.bulkCreate(dynamicEntries);
-    //         res.status(201).send('MUK berhasil dibuat');
-    //       } else {
-    //         res.status(401).json('Mohon Maaf Anda Harus Login Terlebih Dahulu')
-    //       }
-    //     } else {
-    //       res.status(401).json('Anda Tidak Memiliki Akses')
-    //     }
-    //   } catch (error) {
-    //     res.status(500).json({
-    //       message: 'Internal Server Error',
-    //       error: error.message
-    //     })
-    //   }
+  //         let base = await Apl02Base.create({ namaSkema, asesorId: idAsesor.id });
 
-    // }
-    static async addMUK(req, res) {
-      try {
-        let userisLogin = req.userLogin;
-        let asesorisLogin = false;
-        let id = userisLogin.id;
-        let idAsesor = await Asesor.findOne({ where: { userId: id } });
-    
-        if (userisLogin.role.toLowerCase() === 'asesor') {
-          asesorisLogin = true;
-    
-          if (asesorisLogin) {
-            let { namaSkema, dynamicFields } = req.body;
-    
-            // Buat Apl02Base baru
-            // let base = await Apl02Base.create({ namaSkema, asesorId: idAsesor.id });
-            const findAsesorBase = await Apl02Base.findOne({
-              where:{
-                asesorId:idAsesor.id
-              }
-            })
+  //         let dynamicEntries = dynamicFields.map(field => ({
+  //           unitKompetensiId: field.unitKompetensiId,
+  //           fieldQuestion: field.fieldQuestion,
+  //           fieldName: field.fieldName,
+  //           fieldValue: field.fieldValue,
+  //           baseId: base.asesorId,
+  //         }));
+  //         await Apl02Dynamic.bulkCreate(dynamicEntries);
+  //         res.status(201).send('MUK berhasil dibuat');
+  //       } else {
+  //         res.status(401).json('Mohon Maaf Anda Harus Login Terlebih Dahulu')
+  //       }
+  //     } else {
+  //       res.status(401).json('Anda Tidak Memiliki Akses')
+  //     }
+  //   } catch (error) {
+  //     res.status(500).json({
+  //       message: 'Internal Server Error',
+  //       error: error.message
+  //     })
+  //   }
 
-            
-            let newDynamicEntries = [];
-            for (const field of dynamicFields) {
-             
-              // Cek apakah item sudah ada di database
-              const existingEntry = await Apl02Dynamic.findOne({
-                where: {
-                  unitKompetensiId: field.unitKompetensiId,
-                  fieldQuestion: field.fieldQuestion,
-                  fieldName: field.fieldName,
-                  baseId: findAsesorBase.id, // Pastikan data dihubungkan ke base yang sesuai
-                },
+  // }
+  static async addMUK(req, res) {
+    try {
+      let userisLogin = req.userLogin;
+      let asesorisLogin = false;
+      let id = userisLogin.id;
+      let idAsesor = await Asesor.findOne({ where: { userId: id } });
+
+      if (userisLogin.role.toLowerCase() === 'asesor') {
+        asesorisLogin = true;
+
+        if (asesorisLogin) {
+          let { namaSkema, dynamicFields } = req.body;
+
+          // Buat Apl02Base baru
+          // let base = await Apl02Base.create({ namaSkema, asesorId: idAsesor.id });
+          const findAsesorBase = await Apl02Base.findOne({
+            where: {
+              asesorId: idAsesor.id
+            }
+          })
+
+
+          let newDynamicEntries = [];
+          for (const field of dynamicFields) {
+
+            // Cek apakah item sudah ada di database
+            const existingEntry = await Apl02Dynamic.findOne({
+              where: {
+                unitKompetensiId: field.unitKompetensiId,
+                fieldQuestion: field.fieldQuestion,
+                fieldName: field.fieldName,
+                baseId: findAsesorBase.id, // Pastikan data dihubungkan ke base yang sesuai
+              },
+            });
+
+            if (!existingEntry) {
+              // Jika tidak ada, tambahkan ke array untuk dimasukkan
+              newDynamicEntries.push({
+                unitKompetensiId: field.unitKompetensiId,
+                fieldQuestion: field.fieldQuestion,
+                fieldName: field.fieldName,
+                fieldValue: field.fieldValue,
+                baseId: findAsesorBase.id,
               });
-    
-              if (!existingEntry) {
-                // Jika tidak ada, tambahkan ke array untuk dimasukkan
-                newDynamicEntries.push({
-                  unitKompetensiId: field.unitKompetensiId,
-                  fieldQuestion: field.fieldQuestion,
-                  fieldName: field.fieldName,
-                  fieldValue: field.fieldValue,
-                  baseId: findAsesorBase.id,
-                });
-              }
             }
-    
-            // Tambahkan data baru ke database
-            if (newDynamicEntries.length > 0) {
-              await Apl02Dynamic.bulkCreate(newDynamicEntries);
-            }
-    
-            res.status(201).send('MUK berhasil ditambahkan');
-          } else {
-            res.status(401).json('Mohon Maaf Anda Harus Login Terlebih Dahulu');
           }
+
+          // Tambahkan data baru ke database
+          if (newDynamicEntries.length > 0) {
+            await Apl02Dynamic.bulkCreate(newDynamicEntries);
+          }
+
+          res.status(201).send('MUK berhasil ditambahkan');
         } else {
-          res.status(401).json('Anda Tidak Memiliki Akses');
+          res.status(401).json('Mohon Maaf Anda Harus Login Terlebih Dahulu');
         }
-      } catch (error) {
-        res.status(500).json({
-          message: 'Internal Server Error',
-          error: error.message,
-        });
+      } else {
+        res.status(401).json('Anda Tidak Memiliki Akses');
       }
+    } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message,
+      });
     }
-    
+  }
+
 
   // patch muk
   static async updateMUK(req, res) {
     try {
       let asesorIsLogin = req.userLogin.role.toLowerCase()
       let { id } = req.params
-      let { fieldName, fieldQuestion, fieldValue, unitKompetensiId} = req.body
+      let { fieldName, fieldQuestion, fieldValue, unitKompetensiId } = req.body
 
       if (asesorIsLogin) {
         let detailedMUK = await Apl02Dynamic.findOne({
@@ -327,7 +327,7 @@ module.exports = class asesorController {
                 id: filterJadwalAwal.jadwalUjikomId
               }
             })
-            
+
             res.status(200).json({ Asesor: findOneData, filterJadwal: findOneJadwal })
 
           } else {
@@ -346,13 +346,13 @@ module.exports = class asesorController {
     }
   }
   // list APL 02 all user
-  static async listAPL02(req,res) {
+  static async listAPL02(req, res) {
     try {
       let userisLogin = req.userLogin
       let asesorIsLogin = req.userLogin.role.toLowerCase()
-    
+
       if (asesorIsLogin) {
-       
+
         let findAsesorData = await Asesor.findOne({
           where: { userId: userisLogin.id },
           include: [
@@ -361,24 +361,24 @@ module.exports = class asesorController {
             }
           ]
         })
-     
+
         let listAPL02Base = await Apl02Base.findOne({
-          where:{asesorId:findAsesorData.dataValues.id}
+          where: { asesorId: findAsesorData.dataValues.id }
         })
-  
+
         let listAPL02 = await Apl02Dynamic.findAll({
-          where:{baseId : listAPL02Base.dataValues.id },
-          order:[['unitKompetensiId', 'ASC']]
+          where: { baseId: listAPL02Base.dataValues.id },
+          order: [['unitKompetensiId', 'ASC']]
         })
         if (listAPL02) {
           res.status(200).json(listAPL02)
-        }else {
+        } else {
           res.status(404).json(null)
         }
-      }else {
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-    }catch(error) {
+    } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message
@@ -387,28 +387,22 @@ module.exports = class asesorController {
   }
 
   // delete muk
-  static async deleteMUK (req,res) {
+  static async deleteMUK(req, res) {
     try {
       let userisLogin = req.userLogin
       let asesorIsLogin = userisLogin.role.toLowerCase()
-      let {id} = req.params
+      let { id } = req.params
       if (asesorIsLogin) {
-        // let deleteAPL02 = await Apl02DinaPeserta.destroy({
-        //   where:{id}
-        // })
-        // if (deleteAPL02) {
-          let deleteAPL02 = await Apl02Dynamic.destroy({
-            where:{id}
-          })
-          res.status(200).json('MUK berhasil dihapus')
-        // }else {
-        //   res.status(404).json("Data tidak ditemukan")
-        // }
-    
-      }else {
+        let deleteAPL02 = await Apl02Dynamic.destroy({
+          where: { id }
+        })
+        res.status(200).json('MUK berhasil dihapus')
+       
+
+      } else {
         res.status(401).json('Anda Tidak memiliki Akses')
       }
-    }catch(error) {
+    } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message
@@ -420,16 +414,16 @@ module.exports = class asesorController {
     try {
       let adminIsLogin = req.userLogin.role.toLowerCase()
       console.log(fileMUK)
-      if(adminIsLogin === 'asesor') {
+      if (adminIsLogin === 'asesor') {
         const uploadedFile = req.file;
 
         // Simpan metadata file di database
         await fileMUK.create({
           // fileName: uploadedFile.originalname,
-          fileName:req.body.fileName,
+          fileName: req.body.fileName,
           path: uploadedFile.path,
           mimeType: uploadedFile.mimetype,
-          asesorId:req.userLogin.id,
+          asesorId: req.userLogin.id,
           namaSkema: req.body.namaSkema, // Nama skema ujian
         });
         console.log(req.body)
@@ -437,10 +431,10 @@ module.exports = class asesorController {
           message: 'File berhasil diunggah',
           file: uploadedFile,
         });
-      }else {
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-     
+
     } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
@@ -457,19 +451,19 @@ module.exports = class asesorController {
       if (adminIsLogin === 'asesor') {
         const fileId = req.params.id;  // ID file dari URL
         const file = await fileMUK.findOne({ where: { id: fileId } });
-  
+
         if (!file) {
           return res.status(404).json({ message: 'File tidak ditemukan' });
         }
-  
+
         res.json({
           message: 'File ditemukan',
           file: file,
         });
-      }else {
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-      
+
     } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
@@ -480,24 +474,24 @@ module.exports = class asesorController {
 
   static async getAllFileMUK(req, res) {
     try {
-      const {namaSkema} = req.params
-      
+      const { namaSkema } = req.params
+
       let adminIsLogin = req.userLogin.role.toLowerCase()
 
-      if (adminIsLogin ==='asesor') {
-        const file = await fileMUK.findAll({ where: { namaSkema: namaSkema} });
+      if (adminIsLogin === 'asesor') {
+        const file = await fileMUK.findAll({ where: { namaSkema: namaSkema } });
         if (!file) {
           return res.status(404).json({ message: 'File tidak ditemukan' });
         }
-  
+
         res.json({
           message: 'File ditemukan',
           file: file,
         });
-      }else {
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-      
+
     } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
@@ -513,17 +507,17 @@ module.exports = class asesorController {
       let adminIsLogin = req.userLogin.role.toLowerCase()
       if (adminIsLogin === 'asesor') {
         const uploadedFile = req.file;
-  
+
         // Cari file lama
         const oldFile = await fileMUK.findOne({ where: { id: fileId } });
-    
+
         if (!oldFile) {
           return res.status(404).json({ message: 'File tidak ditemukan' });
         }
-    
+
         // Hapus file lama dari sistem berkas (pastikan file path benar)
         fs.unlinkSync(oldFile.path);
-    
+
         // Update metadata di database dengan file baru
         await oldFile.update({
           fileName: uploadedFile.originalname,
@@ -532,15 +526,15 @@ module.exports = class asesorController {
           namaSkema: req.body.namaSkema,
           asesorId: req.userLogin.id
         });
-    
+
         res.json({
           message: 'File berhasil diperbarui',
           file: uploadedFile,
         });
-      }else {
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
-      
+
     } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
@@ -555,20 +549,20 @@ module.exports = class asesorController {
       let adminIsLogin = req.userLogin.role.toLowerCase()
       if (adminIsLogin === 'asesor') {
         const file = await fileMUK.findOne({ where: { id: fileId } });
-  
+
         if (!file) {
           return res.status(404).json({ message: 'File tidak ditemukan' });
         }
         // Hapus file dari sistem berkas
         fs.unlinkSync(file.path);
-    
+
         // Hapus metadata file dari database
         await file.destroy();
-    
+
         res.json({
           message: 'File berhasil dihapus',
         });
-      }else {
+      } else {
         res.status(401).json('Anda Tidak Memiliki Akses')
       }
 
@@ -580,65 +574,25 @@ module.exports = class asesorController {
     }
   }
 
-  // static async downloadFileMUK (req,res) {
-  //   try {
-  //     const { id } = req.params;
-  //     const isAllowed = req.userLogin.role.toLowerCase()
-  //     // const namaSkema = req.body.namaSkema
-  //     if (!id) {
-  //       return res.status(400).json({
-  //         message: 'Parameter dokumenKe harus diisi dengan nilai 1-24.',
-  //       });
-  //     } 
-      
-  //     const file = await fileMUK.findOne({ where: {id } });
-  //     if (!isAllowed || isAllowed !== 'asesor' ) {
-  //       return res.status(404).json({ message: 'Anda Tidak Memiliki Akses.' });
-  //     }
-     
-  //     const filePath = file.path;
-
-  //     if (!filePath || !fs.existsSync(filePath)) {
-  //       return res.status(404).json({ message: `File  tidak ditemukan.` });
-  //     }
-  //     // console.log(`Mencoba mengunduh file di path: ${filePath}`);
-  //     // res.download(filePath, path.basename(filePath));
-
-  //     res.download(filePath, path.basename(filePath), (err) => {
-  //       if (err) {
-  //         return res.status(500).json({
-  //           message: 'Gagal mengunduh file.',
-  //           error: err.message,
-  //         });
-  //       }
-  //     })
-  //   }catch(error) {
-  //     res.status(500).json({
-  //       message: 'Internal Server Error',
-  //       error: error.message,
-  //     });
-  //   }
-  // }
-
   static async downloadFileMUK(req, res) {
     try {
       const { id } = req.params; // Ambil parameter id dari URL
       const userRole = req.userLogin.role.toLowerCase(); // Periksa role pengguna
-  
+
       // Validasi parameter id
       if (!id) {
         return res.status(400).json({
           message: "Parameter id harus diisi.",
         });
       }
-  
+
       // Validasi role pengguna
       if (!userRole || userRole !== "asesor") {
         return res.status(403).json({
           message: "Anda tidak memiliki akses untuk mengunduh file ini.",
         });
       }
-  
+
       // Cari file berdasarkan id
       const file = await fileMUK.findOne({ where: { id } });
       if (!file) {
@@ -646,18 +600,18 @@ module.exports = class asesorController {
           message: "File tidak ditemukan di database.",
         });
       }
-  
+
       // Ambil path file dan nama file asli dari database
       const filePath = file.path;
       const originalFileName = file.fileName; // Nama file asli (dengan ekstensi)
-  
+
       // Periksa apakah file ada di file system
       if (!filePath || !fs.existsSync(filePath)) {
         return res.status(404).json({
           message: "File tidak ditemukan pada path yang disimpan.",
         });
       }
-  
+
       // Kirim file untuk diunduh dengan nama file asli
       res.download(filePath, originalFileName, (err) => {
         if (err) {
@@ -676,40 +630,93 @@ module.exports = class asesorController {
       });
     }
   }
-  
-  
 
-  static async downloadFileAsesi (req,res) {
+  static async downloadFileAsesi(req, res) {
     try {
       const { id } = req.params;
-      const isAllowed = req.userLogin.role.toLowerCase()
-      const {namaSkema, namaPeserta }= req.body
-      
-      if (!dokumen) {
-        return res.status(400).json({
-          message: 'Parameter dokumenKe harus diisi dengan nilai 1-24.',
-        });
-      } 
-      const fileAsesi = await PesertaUjikom.findOne ({where: {namaPeserta}})
-      if (!isAllowed || isAllowed !== 'asesor' ) {
-        return res.status(404).json({ message: 'Anda Tidak Memiliki Akses.' });
-      }
-     
-      const filePath = fileAsesi[dokumen];
+      const { filePath } = req.query; // File path dari query parameter
+      const userRole = req.userLogin.role.toLowerCase();
 
-      if (!filePath || !fs.existsSync(filePath)) {
-        return res.status(404).json({ message: `File untuk dokumen ${dokumen} tidak ditemukan.` });
+      if (!userRole || userRole !== 'asesor') {
+        return res.status(403).json({ message: 'Anda tidak memiliki akses.' });
       }
-      console.log(`Mencoba mengunduh file di path: ${filePath}`);
-      // res.download(filePath, path.basename(filePath));
-      res.download(filePath, path.basename(filePath), (err) => {
+
+      const fileAsesi = await PesertaUjikom.findOne({ where: { id } });
+
+      if (!fileAsesi) {
+        return res.status(404).json({ message: `Peserta dengan ID ${id} tidak ditemukan.` });
+      }
+
+      // Konversi ke JSON agar bisa diakses dengan `Object.keys()`
+      const pesertaData = fileAsesi.toJSON();
+
+      console.log('Data Peserta:', pesertaData);
+      console.log('File Path dari Frontend:', filePath);
+
+      // Pastikan `filePath` cocok dengan salah satu kolom di database
+      const matchingFilePathKey = Object.keys(pesertaData).find((key) => {
+        const value = pesertaData[key];
+
+        // Pastikan value bukan null/undefined dan merupakan string
+        if (typeof value === 'string') {
+          console.log(`Membandingkan: "${value.trim().toLowerCase()}" === "${filePath.trim().toLowerCase()}"`);
+          return value.trim().toLowerCase() === filePath.trim().toLowerCase();
+        }
+
+        return false; // Jika bukan string, langsung return false
+      });
+
+      if (!matchingFilePathKey) {
+        return res.status(404).json({
+          message: 'File path tidak cocok dengan data peserta.',
+        });
+      }
+
+      const actualFilePath = pesertaData[matchingFilePathKey];
+
+      if (!fs.existsSync(actualFilePath)) {
+        return res.status(404).json({ message: 'File tidak ditemukan di server.' });
+      }
+
+      console.log(`Mengunduh file dari path: ${actualFilePath}`);
+
+      res.download(actualFilePath, path.basename(actualFilePath), (err) => {
         if (err) {
+          console.error('Error saat mengunduh file:', err);
           return res.status(500).json({
             message: 'Gagal mengunduh file.',
             error: err.message,
           });
         }
-      })
+      });
+    } catch (error) {
+      console.error('Error internal:', error);
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message,
+      });
+    }
+  }
+
+  static async penilaianAsesi (req,res) {
+    try {
+      const {id} = req.params
+      const {status} = req.body
+      let asesorIsLogin = req.userLogin.role.toLowerCase()
+      if (asesorIsLogin === 'asesor') {
+        const filterPeserta = await PesertaUjikom.findOne({
+          where:{id}
+        })
+        if (status) filterPeserta.statusKompetensi = status
+        let saveUpdate = await filterPeserta.save()
+        if (saveUpdate) {
+          res.status(201).json(`Unit Kompetensi ke ${filterPeserta} berhasil di update`)
+        } else {
+          res.status(401).json('Tidak dapat melakukan update')
+        }
+      }else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
     }catch(error) {
       res.status(500).json({
         message: 'Internal Server Error',

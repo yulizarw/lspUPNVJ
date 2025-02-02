@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const path = require('path');
+const Sequelize = require('sequelize');
+
 module.exports = class pesertaUjikomController {
   // home
   static async home(req, res) {
@@ -534,41 +536,49 @@ module.exports = class pesertaUjikomController {
       })
     }
   }
-
   static async postMUK(req, res) {
     try {
       const { dokumen } = req.body;
-      const userId = req.userLogin.id
-
+      const userId = req.userLogin.id;
+      console.log(dokumen, 'dari fe')
+      // Validasi: Pastikan dokumen ada
       if (!dokumen) {
         return res.status(400).json({
-          message: 'Parameter dokumen harus diisi dokumen apa.',
+          message: 'Parameter dokumen harus diisi dengan nama dokumen yang benar.',
         });
       }
 
-      const peserta = await PesertaUjikom.findOne({ where: { userId }, include: [{ model: SkemaUjikom }] });
+      // Cari peserta berdasarkan userId
+      const peserta = await PesertaUjikom.findOne({
+        where: { userId },
+        include: [{ model: SkemaUjikom }]
+      });
 
       if (!peserta) {
         return res.status(404).json({ message: 'Peserta tidak ditemukan.' });
       }
 
-      // File yang diunggah tersedia di req.file
+      // Validasi: Pastikan ada file yang diunggah
       const uploadedFile = req.file;
       if (!uploadedFile) {
         return res.status(400).json({ message: 'File harus diunggah.' });
       }
 
-      // Bangun objek update secara dinamis
-      const updateData = {};
-      updateData[dokumen] = uploadedFile.path; // Misal: { dokumen1: 'path/to/file' }
 
-      // Update data di database
-      const updatedPeserta = await PesertaUjikom.update(updateData, {
-        where: { id: peserta.id },
-      });
+
+      // Pastikan dokumen yang dikirim adalah kolom yang valid dalam PesertaUjikom
+      if (!(dokumen in peserta)) {
+        return res.status(400).json({
+          message: `Kolom dokumen '${dokumen}' tidak ditemukan dalam database.`,
+        });
+      }
+
+      // Update kolom dalam PesertaUjikom sesuai dengan nilai dokumen yang dikirim
+      peserta[dokumen] = uploadedFile.path;
+      await peserta.save();  // Simpan perubahan
 
       res.json({
-        message: `File berhasil diunggah dan disimpan pada dokumen ${dokumen}.`,
+        message: `File berhasil diunggah dan disimpan pada kolom '${dokumen}'.`,
         file: uploadedFile,
       });
     } catch (error) {
@@ -579,41 +589,14 @@ module.exports = class pesertaUjikomController {
     }
   }
 
-  // static async getFileMUK(req, res) {
-  //   try {
 
-  //     let adminIsLogin = req.userLogin.role.toLowerCase()
-
-  //     if (adminIsLogin === 'admin') {
-  //       const fileId = req.params.id;  // ID file dari URL
-  //       const file = await fileAPL01.findOne({ where: { id: fileId } });
-
-  //       if (!file) {
-  //         return res.status(404).json({ message: 'File tidak ditemukan' });
-  //       }
-
-  //       res.json({
-  //         message: 'File ditemukan',
-  //         file: file,
-  //       });
-  //     } else {
-  //       res.status(401).json('Anda Tidak Memiliki Akses')
-  //     }
-
-  //   } catch (error) {
-  //     res.status(500).json({
-  //       message: 'Internal Server Error',
-  //       error: error.message,
-  //     });
-  //   }
-  // }
   // Mendapatkan file berdasarkan dokumenKe
   static async getFileMUK(req, res) {
     try {
 
       const { dokumen } = req.params;
       const userId = req.userLogin.id
-
+      console.log(dokumen)
       if (!dokumen) {
         return res.status(400).json({
           message: 'Parameter dokumenKe harus diisi dengan nilai 1-24.',
@@ -641,8 +624,8 @@ module.exports = class pesertaUjikomController {
     }
   };
 
-  static async downloadFileStream(req,res) {
-    try{
+  static async downloadFileStream(req, res) {
+    try {
       const { dokumen } = req.params;
       const userId = req.userLogin.id
 
@@ -650,15 +633,15 @@ module.exports = class pesertaUjikomController {
         return res.status(400).json({
           message: 'Parameter dokumenKe harus diisi dengan nilai 1-24.',
         });
-      } 
-     
-      
+      }
+
+
       const peserta = await PesertaUjikom.findOne({ where: { userId }, include: [{ model: SkemaUjikom }] });
-      const file = await fileMUK.findOne({ where: { namaSkema:peserta.SkemaUjikom.namaSkema, fileName:dokumen } });
+      const file = await fileMUK.findOne({ where: { namaSkema: peserta.SkemaUjikom.namaSkema, fileName: dokumen } });
       if (!peserta) {
         return res.status(404).json({ message: 'Peserta tidak ditemukan.' });
       }
-     
+
       const filePath = file.path;
 
       if (!filePath || !fs.existsSync(filePath)) {
@@ -674,7 +657,7 @@ module.exports = class pesertaUjikomController {
           });
         }
       })
-    }catch(error) {
+    } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message,
@@ -682,12 +665,13 @@ module.exports = class pesertaUjikomController {
     }
   }
 
-  static async getAllFileMUK(req, res) {
+  static async getAllFileAsesi(req, res) {
     try {
-
+      console.log('a')
       const userId = req.userLogin.id
 
       const peserta = await PesertaUjikom.findOne({ where: { userId }, include: [{ model: SkemaUjikom }] });
+
       const file = peserta
       if (!file) {
         return res.status(404).json({ message: 'File tidak ditemukan' });
@@ -707,14 +691,14 @@ module.exports = class pesertaUjikomController {
     }
   }
 
-  static async streamFileMUK (req,res) {
+  static async streamFileMUK(req, res) {
     try {
       const userId = req.userLogin.id
       const peserta = await PesertaUjikom.findOne({ where: { userId }, include: [{ model: SkemaUjikom }] });
       if (!peserta) {
         res.status(404).json("anda belum terdaftar")
       }
-      const file = await fileMUK.findAll({ where: { namaSkema:peserta.SkemaUjikom.namaSkema } });
+      const file = await fileMUK.findAll({ where: { namaSkema: peserta.SkemaUjikom.namaSkema } });
       // const file = peserta
       if (!file) {
         return res.status(404).json({ message: 'File tidak ditemukan' });
@@ -725,7 +709,7 @@ module.exports = class pesertaUjikomController {
         file: file,
       });
 
-    }catch (error) {
+    } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',
         error: error.message,
@@ -741,7 +725,7 @@ module.exports = class pesertaUjikomController {
 
 
       // Cari data peserta ujikom berdasarkan userId
-      const oldFile = await PesertaUjikom.findOne({ where: { id:userId } });
+      const oldFile = await PesertaUjikom.findOne({ where: { id: userId } });
       if (!oldFile) {
         return res.status(404).json({ message: 'Data peserta tidak ditemukan' });
       }
@@ -768,4 +752,98 @@ module.exports = class pesertaUjikomController {
       });
     }
   }
+
+  static async getAllFileMUK(req, res) {
+    try {
+      const { namaSkema } = req.params
+
+      let adminIsLogin = req.userLogin.role.toLowerCase()
+
+      if (adminIsLogin === 'peserta ujikom') {
+        const file = await fileMUK.findAll({ where: { namaSkema: namaSkema } });
+        if (!file) {
+          return res.status(404).json({ message: 'File tidak ditemukan' });
+        }
+
+        res.json({
+          message: 'File ditemukan',
+          file: file,
+        });
+      } else {
+        res.status(401).json('Anda Tidak Memiliki Akses')
+      }
+
+    } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message,
+      });
+    }
+  }
+
+  
+static async deleteFileAsesi(req, res) {
+  try {
+    const { dokumen } = req.params; // ambil dokumen yang diterima
+    const fileColumn = dokumen; // kolom yang ingin dihapus (misalnya 'apl01')
+
+    // Cari data peserta yang memiliki nilai di kolom sesuai dengan dokumen yang diterima
+    const cariFile = await PesertaUjikom.findOne({
+      where: {
+        [fileColumn]: {
+          [Sequelize.Op.ne]: null, // pastikan kolom tidak null
+        },
+      },
+    });
+
+    if (!cariFile) {
+      return res.status(404).json({
+        message: 'Dokumen tidak ditemukan atau kolom tidak ada',
+      });
+    }
+
+    // Dapatkan path file dari kolom yang sesuai
+    const filePath = cariFile[fileColumn];
+
+    // Cek apakah filePath ada dan file tersebut ada di server
+    if (filePath) {
+      // Hapus file fisik di server
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          return res.status(500).json({
+            message: 'Gagal menghapus file',
+            error: err.message,
+          });
+        }
+        // Jika file berhasil dihapus, update database untuk menghapus nilai kolom
+        PesertaUjikom.update(
+          { [fileColumn]: null }, // set nilai kolom menjadi null
+          {
+            where: { id: cariFile.id }, // update baris yang sesuai
+          }
+        )
+          .then(() => {
+            res.json({
+              message: 'File dan kolom berhasil dihapus',
+            });
+          })
+          .catch((error) => {
+            res.status(500).json({
+              message: 'Gagal mengupdate database',
+              error: error.message,
+            });
+          });
+      });
+    } else {
+      return res.status(404).json({
+        message: 'File tidak ditemukan di server',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: 'Internal Server Error',
+      error: error.message,
+    });
+  }
+}
 }

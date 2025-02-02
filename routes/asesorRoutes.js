@@ -54,6 +54,8 @@ routes.delete('/deleteMUK/:id', asesorController.deleteFileMUK);
 routes.get('/downloadFileMUK/:id', asesorController.downloadFileMUK)
 // routes untuk download dari folder asesi by name
 routes.get ('/downloadFileAsesi/:id', asesorController.downloadFileAsesi)
+// routes untuk mengubah status kompetensi asesi
+routes.post('/penilaianAsesi/:id', asesorController.penilaianAsesi)
 
 
 

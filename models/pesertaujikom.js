@@ -157,6 +157,21 @@ module.exports = (sequelize, DataTypes) => {
     },
     frak06:{
       type:DataTypes.STRING
+    },
+    fria08:{
+      type:DataTypes.STRING
+    },
+    fria09:{
+      type:DataTypes.STRING
+    },
+    fria10:{
+      type:DataTypes.STRING
+    },
+    fria11:{
+      type:DataTypes.STRING
+    },
+    statusKompetensi:{
+      type:DataTypes.STRING
     }
   }, {
     sequelize,

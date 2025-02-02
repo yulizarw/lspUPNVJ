@@ -38,12 +38,14 @@ routes.post('/isi-frak01', pesertaUjikomController.isiFrak01)
 
 //  Route untuk mendapatkan file MUK
 routes.get('/getMUK/:dokumen', pesertaUjikomController.getFileMUK);
-routes.get ('/getAllMUK', pesertaUjikomController.getAllFileMUK)
+routes.get ('/getAllFileAsesi', pesertaUjikomController.getAllFileAsesi)
+routes.delete('/deleteFileAsesi/:dokumen', pesertaUjikomController.deleteFileAsesi)
 routes.post('/upload-file',uploadFileAsesi.single('file'), pesertaUjikomController.postMUK)
 routes.put('/editMUK/:namaFile', uploadFileAsesi.single('file'), pesertaUjikomController.updateFileAsesiMUK);
 // get muk from template di file muk
 routes.get ('/stream-muk', pesertaUjikomController.streamFileMUK)
 routes.get('/download-stream/:dokumen', pesertaUjikomController.downloadFileStream)
-// peserta melakukan banding
+
+routes.get ('/getAllMUK/:namaSkema', pesertaUjikomController.getAllFileMUK)
 
 module.exports=routes
