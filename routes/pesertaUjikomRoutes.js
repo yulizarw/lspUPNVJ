@@ -1,6 +1,6 @@
 const routes = require('express').Router()
 const pesertaUjikomController = require('../controllers/pesertaUjikomController')
-const {uploadFileAsesi, uploadFileMuk} = require('../middlewares/storage')
+const {uploadFileAsesi, uploadFileMuk, uploadFileTUK} = require('../middlewares/storage')
 const {authentication} = require('../middlewares/auth')
 
 routes.get('/index', pesertaUjikomController)

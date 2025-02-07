@@ -455,37 +455,87 @@ module.exports = class userController {
   }
 
   // admin add TUK
+  // static async addTUK(req, res) {
+  //   try {
+  //     let userisLogin = req.userLogin
+  //     let adminIsLogin = userisLogin.role.toLowerCase()
+  //     if (adminIsLogin === 'admin') {
+  //       let { namaTUK, lokasiTUK, sptVerifikasiTUK, rekamanVerifikasi, skPenetapanTUK, lat, long } = req.body
+  //       let filterTuk = await Tuk.findOne({
+  //         where: { namaTUK }
+  //       })
+
+  //       if (!filterTuk) {
+  //         let params = { namaTUK, lokasiTUK, sptVerifikasiTUK, rekamanVerifikasi, skPenetapanTUK, lat, long }
+          
+  //         let createTUK = await Tuk.create(params)
+  //         if (createTUK) {
+  //           res.status(201).json(`TUK ${namaTUK} berhasil dimasukkan dalam server`)
+  //         }
+  //       } else {
+  //         res.status(404).json(`Sudah ada TUK yang terdaftar dengan nama ${namaTUK}, silahkan melakukan Pendataan TUK`)
+  //       }
+
+  //     } else {
+  //       res.status(401).json('Anda Tidak memiliki Akses')
+  //     }
+  //   } catch (error) {
+  //     res.status(500).json({
+  //       message: 'Internal Server Error',
+  //       error: error.message
+  //     })
+  //   }
+  // }
   static async addTUK(req, res) {
     try {
-      let userisLogin = req.userLogin
-      let adminIsLogin = userisLogin.role.toLowerCase()
-      if (adminIsLogin === 'admin') {
-        let { namaTUK, lokasiTUK, sptVerifikasiTUK, rekamanVerifikasi, skPenetapanTUK, lat, long } = req.body
-        let filterTuk = await Tuk.findOne({
-          where: { namaTUK }
-        })
+        let userisLogin = req.userLogin;
+        let adminIsLogin = userisLogin.role.toLowerCase();
 
-        if (!filterTuk) {
-          let params = { namaTUK, lokasiTUK, sptVerifikasiTUK, rekamanVerifikasi, skPenetapanTUK, lat, long }
-          console.log(params)
-          let createTUK = await Tuk.create(params)
-          if (createTUK) {
-            res.status(201).json(`TUK ${namaTUK} berhasil dimasukkan dalam server`)
-          }
-        } else {
-          res.status(404).json(`Sudah ada TUK yang terdaftar dengan nama ${namaTUK}, silahkan melakukan Pendataan TUK`)
+        if (adminIsLogin !== 'admin') {
+            return res.status(401).json({ message: 'Anda tidak memiliki akses' });
         }
 
-      } else {
-        res.status(401).json('Anda Tidak memiliki Akses')
-      }
+        let { namaTUK, lokasiTUK, lat, long } = req.body;
+
+        if (!namaTUK || !lokasiTUK || !lat || !long) {
+            return res.status(400).json({ message: 'Semua field wajib diisi' });
+        }
+
+        // Cek apakah TUK sudah ada
+        let existingTUK = await Tuk.findOne({ where: { namaTUK } });
+        if (existingTUK) {
+            return res.status(409).json({ message: `TUK dengan nama ${namaTUK} sudah terdaftar` });
+        }
+
+        // Simpan path file yang diunggah
+        let sptVerifikasiTUK = req.files['sptVerifikasiTUK'] ? req.files['sptVerifikasiTUK'][0].path : null;
+        let rekamanVerifikasi = req.files['rekamanVerifikasi'] ? req.files['rekamanVerifikasi'][0].path : null;
+        let skPenetapanTUK = req.files['skPenetapanTUK'] ? req.files['skPenetapanTUK'][0].path : null;
+
+        // Simpan data ke database
+        let newTUK = await Tuk.create({
+            namaTUK,
+            lokasiTUK,
+            sptVerifikasiTUK,
+            rekamanVerifikasi,
+            skPenetapanTUK,
+            lat,
+            long
+        });
+
+        res.status(201).json({
+            message: `TUK ${namaTUK} berhasil ditambahkan`,
+            data: newTUK
+        });
+
     } catch (error) {
-      res.status(500).json({
-        message: 'Internal Server Error',
-        error: error.message
-      })
+        res.status(500).json({
+            message: 'Internal Server Error',
+            error: error.message
+        });
     }
-  }
+}
+
 
   static async patchTUK(req, res) {
     try {

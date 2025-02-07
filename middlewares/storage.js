@@ -75,4 +75,33 @@ const storageFileMUK = multer.diskStorage({
   },
 });
 const uploadFileMuk = multer({ storage: storageFileMUK });
-module.exports ={ uploadFileAsesi, uploadFileMuk}
+
+// Konfigurasi Multer untuk FileTUK
+const storageFileTUK = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const { namaTUK } = req.body;
+        if (!namaTUK) {
+            return cb(new Error('Nama TUK wajib diisi.'));
+        }
+
+        const dir = path.join(
+            process.env.HOME,
+            `Desktop/Yulizar/Desktop/UPNVJ/lspUpnvj/File Drop/File TUK/${namaTUK.replace(/\s+/g, '_')}`
+        );
+
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true }); // Buat folder jika belum ada
+        }
+
+        cb(null, dir); // Set folder tujuan
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
+// Middleware untuk upload FileTUK
+const uploadFileTUK = multer({ storage: storageFileTUK });
+
+
+module.exports ={ uploadFileAsesi, uploadFileMuk, uploadFileTUK}

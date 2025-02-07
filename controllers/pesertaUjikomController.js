@@ -540,7 +540,7 @@ module.exports = class pesertaUjikomController {
     try {
       const { dokumen } = req.body;
       const userId = req.userLogin.id;
-      console.log(dokumen, 'dari fe')
+   
       // Validasi: Pastikan dokumen ada
       if (!dokumen) {
         return res.status(400).json({

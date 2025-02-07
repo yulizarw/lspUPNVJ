@@ -1,7 +1,9 @@
 const routes = require('express').Router()
 const userController = require('../controllers/userController')
-const {authentication} = require('../middlewares/auth')
+const { authentication } = require('../middlewares/auth')
 routes.get('/', userController)
+
+const { uploadFileAsesi, uploadFileMuk, uploadFileTUK } = require('../middlewares/storage')
 
 // register per role
 routes.post('/register', userController.registerUser)
@@ -9,7 +11,7 @@ routes.post('/register', userController.registerUser)
 routes.post('/login', userController.loginRole)
 
 // list news
-routes.get ('/news', userController.newsList)
+routes.get('/news', userController.newsList)
 
 routes.use(authentication)
 // user melihat jadwal uji (all user)
@@ -34,14 +36,22 @@ routes.get('/list-TUK', userController.listTUK)
 // admin membuat skema
 routes.post('/admin/tambah-skema', userController.tambahSkema)
 // admin mengupdate skema
-routes.patch ('/admin/update-skema/:id', userController.patchSkema)
+routes.patch('/admin/update-skema/:id', userController.patchSkema)
 // admin melakukan delete skema
 routes.delete('/admin/hapus-skema/:id', userController.deleteSkema)
 
 // list nama seluruh peserta ujikom
-routes.get ('/admin/peserta-ujikom', userController.listPeserta)
+routes.get('/admin/peserta-ujikom', userController.listPeserta)
+
 // admin menentukan TUK dan membuat TUK untuk suatu skema (CRUD)
-routes.post('/admin/tambah-tuk', userController.addTUK)
+routes.post('/admin/tambah-tuk', 
+  uploadFileTUK.fields([
+      { name: 'sptVerifikasiTUK', maxCount: 1 },
+      { name: 'rekamanVerifikasi', maxCount: 1 },
+      { name: 'skPenetapanTUK', maxCount: 1 }
+  ]), 
+  userController.addTUK
+)
 // admin melakukan pengubahan data TUK
 routes.patch('/admin/ubah-data-tuk/:id', userController.patchTUK)
 // admin melakukan penghapusan TUK
@@ -62,8 +72,8 @@ routes.delete('/admin/hapus-frak01/:idPeserta', userController.hapusFrak01)
 
 // admin membuat jadwal ujikom
 routes.post('/admin/buat-jadwal', userController.buatJadwal)
-routes.patch ('/admin/ganti-jadwal/:id', userController.gantiJadwal)
-routes.get('/admin/list-jadwal',userController.listJadwal )
+routes.patch('/admin/ganti-jadwal/:id', userController.gantiJadwal)
+routes.get('/admin/list-jadwal', userController.listJadwal)
 // admin mencocokan jadwal dengan skema
 routes.post('/admin/plot-jadwal/:idJadwal', userController.plotJadwal)
 // admin mengganti jadwalskemaujikom
@@ -76,7 +86,7 @@ routes.delete('/admin/hapus-jadwal/:idJadwal', userController.hapusJadwal)
 // admin mengecek keseluruhan field yuang diisi lalu menyimpan edit data  skemaUjikomId di tabel mahasiswa untuk memverifikasi
 
 // admin create news
-routes.post ('/admin/create-news', userController.createNews)
+routes.post('/admin/create-news', userController.createNews)
 // admin update news
 routes.patch('/admin/update-news/:idBerita', userController.updateNews)
 // admin delete news
@@ -94,4 +104,4 @@ routes.delete('/admin/delete-news/:idBerita', userController.deleteBerita)
 // user peserta ujikom berada di peserta ujikom
 
 
-module.exports=routes
+module.exports = routes
